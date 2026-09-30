@@ -1,0 +1,107 @@
+/* Quick links styling. Link data is defined in lib/quicklinks.ts and mirrors https://www.fpis.gov.ng/. */
+.site-directory{display:grid;grid-template-columns:minmax(255px,.85fr) minmax(0,2.5fr);gap:46px;row-gap:0;padding:50px 5.2% 44px;color:#d6e2d9;background:var(--green-dark)}
+.site-directory h2{margin:0 0 10px;color:white;font-family:Manrope,sans-serif;font-size:25px;font-weight:600}
+.site-directory .eyebrow{color:#e4c77d}
+.directory-intro>p:not(.eyebrow){max-width:330px;margin:0 0 21px;color:#b3c6ba;font-size:12px;line-height:1.7}
+.directory-intro .text-link{color:#e4c77d;font-size:11px}
+.directory-intro .text-link:hover{color:white}
+.eservice-list{margin:0 0 19px;padding:0;display:grid;gap:9px;list-style:none}
+.eservice-list .quicklink{display:block;padding:11px 13px;background:#ffffff0f;border:1px solid #ffffff26;border-radius:3px;transition:background .18s ease,border-color .18s ease}
+.eservice-list .quicklink:hover{background:#ffffff1c;border-color:#e4c77d}
+.eservice-list .quicklink-label{color:white;font-size:12px;font-weight:700}
+.eservice-list .quicklink small{color:#a5bcaf;font-size:10px}
+.directory-groups{display:grid;grid-template-columns:repeat(auto-fit,minmax(185px,1fr));gap:26px 28px}
+.directory-group h3{margin:0 0 11px;padding-bottom:8px;color:#e4c77d;border-bottom:1px solid #ffffff24;font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase}
+.directory-group ul,.quicklink-group ul{margin:0;padding:0;display:grid;gap:7px;list-style:none}
+.directory-subsection h4{margin:13px 0 8px;color:#dbe7de;font-size:10px;font-weight:700;letter-spacing:.4px}
+.quicklink{display:block;color:#c4d5c9;font-size:11px;line-height:1.5}
+.quicklink-label{display:block}
+.quicklink i{margin-left:5px;color:#8fae98;font-style:normal}
+.quicklink:hover{color:white}
+.quicklink:hover i{color:#e4c77d}
+.quicklink small{display:block;margin-top:3px;color:#9db2a5;font-size:10px;line-height:1.5}
+.quicklink-placeholder{color:#8b9d90;cursor:default}
+.quicklink-placeholder i{display:none}
+/* Header navigation: list semantics plus the Quick links mega-menu. */
+.site-header{position:relative}
+.main-nav>ul{display:flex;align-items:center;gap:28px;margin:0;padding:0;list-style:none}
+.nav-dropdown-trigger{display:inline-flex;align-items:center;gap:5px}
+.nav-caret{color:var(--gold);font-size:9px;transition:transform .18s ease}
+.nav-dropdown:hover .nav-caret,.nav-dropdown:focus-within .nav-caret{transform:rotate(180deg)}
+.nav-dropdown-panel{position:absolute;top:100%;left:5.2%;z-index:40;display:none;width:min(1120px,calc(100vw - 44px));max-height:calc(100vh - 130px);overflow-y:auto;padding:24px 26px 26px;background:white;border:1px solid var(--line);box-shadow:0 26px 50px #0d2c1f26}
+.nav-dropdown:hover .nav-dropdown-panel,.nav-dropdown:focus-within .nav-dropdown-panel{display:block}
+.nav-panel-head{display:flex;align-items:center;gap:18px;flex-wrap:wrap}
+.nav-panel-head .eyebrow{margin:0;flex:0 0 auto}
+.nav-panel-head p:not(.eyebrow){margin:0;color:var(--muted);font-size:11.5px}
+.main-nav .nav-panel-head .text-link{margin-left:auto;font-size:11px}
+.nav-panel-groups{display:grid;grid-template-columns:repeat(auto-fit,minmax(148px,1fr));gap:20px 22px;margin-top:18px;padding-top:18px;border-top:1px solid var(--line)}
+.nav-panel-group h3{margin:0 0 9px;padding-bottom:7px;color:var(--green);border-bottom:1px solid var(--line);font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase}
+.nav-panel-group ul{margin:0;padding:0;display:grid;gap:5px;list-style:none}
+.main-nav .nav-link{display:block;color:#4a564f;font-size:11px;font-weight:500;line-height:1.45}
+.main-nav .nav-link:hover{color:var(--green);font-weight:700}
+.nav-panel-sub{margin-top:11px}
+.nav-panel-sub h4{margin:0 0 7px;color:var(--muted);font-size:8.5px;font-weight:700;letter-spacing:.7px;text-transform:uppercase}
+.directory-actions{display:flex;align-items:center;gap:18px;flex-wrap:wrap}
+.directory-contact{grid-column:1/-1;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px 26px;margin-top:26px;padding-top:15px;border-top:1px solid #ffffff26}
+.directory-contact>div{display:flex;flex-wrap:wrap;align-items:baseline;gap:3px 14px}
+.directory-contact span{order:1;margin:0;color:#e4c77d;font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase}
+.directory-contact p{margin:0;color:#b3c6ba;font-size:11px;line-height:1.55}
+.directory-contact p:first-of-type{order:3;flex:0 0 100%}
+.directory-contact p:last-child{order:2;display:flex;flex-wrap:wrap;gap:3px 14px}
+.site-directory .directory-contact a{color:#e4c77d;font-size:11px;white-space:nowrap}
+.site-directory .directory-contact a:hover{color:white;text-decoration:underline;text-underline-offset:3px}
+
+@media(max-width:850px){
+.site-header{position:static}
+.nav-dropdown-panel{position:static;width:100%;max-height:none;box-shadow:none}
+}
+
+@media(max-width:620px){
+.main-nav>ul{gap:18px}
+.nav-panel-groups{grid-template-columns:repeat(auto-fit,minmax(130px,1fr))}
+.directory-actions{gap:12px}
+}
+
+.inline-link{color:var(--green);font-weight:700;text-decoration:underline;text-underline-offset:3px}
+.quicklinks-page{max-width:1120px;margin:auto;padding:56px 34px 90px}
+.quicklinks-top{display:flex;justify-content:space-between;align-items:end;gap:30px;padding-bottom:24px;border-bottom:1px solid var(--line)}
+.quicklinks-top h1{margin:0 0 10px;font-family:Manrope,sans-serif;font-size:clamp(33px,3.4vw,46px);line-height:1.1;font-weight:600}
+.quicklinks-top p:not(.eyebrow){max-width:520px;margin:0;color:var(--muted);font-size:12px;line-height:1.75}
+.eservice-strip{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:32px}
+.eservice-card{display:flex;gap:12px;padding:18px;color:#d6e2d9;background:var(--green-dark);border-radius:3px}
+.eservice-index{flex:0 0 24px;height:24px;display:grid;place-items:center;color:#e4c77d;border:1px solid #ffffff33;border-radius:50%;font-size:10px;font-weight:700}
+.eservice-card .quicklink{flex:1}
+.eservice-card .quicklink-label{color:white;font-size:12px;font-weight:700}
+.eservice-card .quicklink small{color:#a5bcaf;font-size:10px}
+.quicklinks-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:24px;margin-top:34px;align-items:start}
+.quicklink-group{padding:24px;background:white;border:1px solid var(--line);box-shadow:0 12px 30px #18392b08}
+.quicklink-group h2{margin:0 0 15px;padding-bottom:11px;border-bottom:1px solid var(--line);font-family:Manrope,sans-serif;font-size:17px;font-weight:600}
+.quicklink-group .quicklink{color:#3f4d45;font-size:12px}
+.quicklink-group .quicklink i{color:#9aa8a0}
+.quicklink-group .quicklink:hover{color:var(--green)}
+.quicklink-group .quicklink:hover i{color:var(--gold)}
+.quicklink-group .quicklink small{color:var(--muted)}
+.quicklink-subgroup{margin-top:17px;padding-top:14px;border-top:1px dashed var(--line)}
+.quicklink-subgroup h3{margin:0 0 11px;color:var(--green);font-size:10px;font-weight:700;letter-spacing:.8px;text-transform:uppercase}
+.quicklinks-note{margin:34px 0 0;padding-top:18px;border-top:1px solid var(--line);color:var(--muted);font-size:12px;line-height:1.7}
+.quicklinks-note a{color:var(--green);font-weight:700}
+.site-footer a{color:var(--muted);text-decoration:underline;text-underline-offset:3px}
+.site-footer a:hover{color:var(--green)}
+
+@media(max-width:850px){
+.site-directory{grid-template-columns:1fr;gap:34px;padding:44px 4% 40px}
+.directory-intro>p:not(.eyebrow){max-width:none}
+.directory-contact{grid-template-columns:1fr;margin-top:20px}
+.eservice-strip{grid-template-columns:1fr}
+.quicklinks-top{align-items:flex-start;flex-direction:column}
+.quicklinks-grid{grid-template-columns:1fr}
+}
+
+@media(max-width:620px){
+.site-directory{padding:36px 7% 32px}
+.directory-groups{grid-template-columns:1fr;gap:23px}
+.site-directory h2{font-size:21px}
+.quicklinks-page{padding:40px 6% 62px}
+.quicklinks-top h1{font-size:33px}
+.quicklink-group{padding:19px 16px}
+}

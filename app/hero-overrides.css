@@ -1,0 +1,28 @@
+.hero {
+  color: white;
+  background-image:
+    linear-gradient(90deg, rgba(8, 34, 25, 0.9) 0%, rgba(11, 49, 35, 0.75) 47%, rgba(11, 49, 35, 0.4) 100%),
+    url("/images/groundnut.jpg.png");
+  background-position: center;
+  background-size: cover;
+}
+
+.hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(0deg, rgba(5, 29, 21, 0.45), transparent 45%);
+  pointer-events: none;
+}
+
+.hero .eyebrow { color: #e4c77d; }
+.hero h1 em { color: #e4c77d; }
+.hero-intro { color: #e5eee8; }
+.hero-note { color: #d3e0d8; }
+.note-icon { color: #f0d48e; border-color: #d4e2d7aa; }
+
+@media (max-width: 620px) {
+  .hero {
+    background-position: 62% center;
+  }
+}
