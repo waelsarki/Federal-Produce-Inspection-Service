@@ -129,3 +129,56 @@ export function readApplications(): ExportApplication[] {
 export function writeApplications(applications: ExportApplication[]): void {
   localStorage.setItem(APPLICATIONS_KEY, JSON.stringify(applications));
 }
+
+/**
+ * The next free reference, e.g. FPIS-2026-0007.
+ *
+ * The sequence is taken from the applications already in storage rather than a
+ * stored counter, so a reference can never collide with an existing record and
+ * the numbering restarts cleanly on 1 January. The year is read from the clock,
+ * which is why the sequence is compared against the current year only.
+ */
+export function nextApplicationNumber(applications: ExportApplication[]): string {
+  const year = new Date().getFullYear();
+  const prefix = `FPIS-${year}-`;
+  const highest = applications.reduce((max, entry) => {
+    const value = entry.applicationNumber?.trim() ?? "";
+    if (!value.startsWith(prefix)) return max;
+    const sequence = Number(value.slice(prefix.length));
+    return Number.isInteger(sequence) && sequence > max ? sequence : max;
+  }, 0);
+  return `${prefix}${String(highest + 1).padStart(4, "0")}`;
+}
+
+/**
+ * Opens a new application for a fresh certificate and returns it.
+ *
+ * A certificate is generated from an application, so creating one means adding a
+ * blank record and letting the officer complete its fields on the certificate
+ * page. Every field starts empty on purpose: the completed values are saved as
+ * `certificateData` overrides, which keeps the applicant's own submission and the
+ * officer's corrections readable side by side. See lib/certificate-fields.ts.
+ */
+export function createCertificateDraft(applicantId?: string): ExportApplication {
+  const applications = readApplications();
+  const applicationNumber = nextApplicationNumber(applications);
+  const draft: ExportApplication = {
+    applicationNumber,
+    applicantId: applicantId ?? readApplicant()?.id ?? "staff-created",
+    submittedAt: new Date().toISOString(),
+    status: "Pending review",
+    consigneeName: "",
+    consigneeAddress: "",
+    commodity: "",
+    hsCode: "",
+    goodsDescription: "",
+    grossWeight: "",
+    netWeight: "",
+    vesselAndVoyage: "",
+    destination: "",
+    nxpNumber: "",
+    shipmentDate: "",
+  };
+  writeApplications([...applications, draft]);
+  return draft;
+}

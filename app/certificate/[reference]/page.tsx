@@ -5,6 +5,7 @@ import { useParams } from "next/navigation";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import CertificateSheet from "@/components/CertificateSheet";
 import CertificateFieldsForm from "@/components/admin/CertificateFieldsForm";
+import CertificateSwitcher from "@/components/admin/CertificateSwitcher";
 import { buildCertificate } from "@/lib/certificate";
 import { formatVerificationCode } from "@/lib/certificate-code";
 import { issuedAtFor, resolveCertificateData } from "@/lib/certificate-fields";
@@ -25,6 +26,8 @@ export default function CertificatePage() {
   const params = useParams<{ reference: string | string[] }>();
   const reference = Array.isArray(params?.reference) ? params.reference[0] : (params?.reference ?? "");
   const [record, setRecord] = useState<ExportApplication | null>(null);
+  /** Every application in this browser, so the switcher can list and filter them. */
+  const [allApplications, setAllApplications] = useState<ExportApplication[]>([]);
   const [applicant, setApplicant] = useState<ApplicantProfile | null>(null);
   const [canIssue, setCanIssue] = useState(false);
   const [ready, setReady] = useState(false);
@@ -37,7 +40,11 @@ export default function CertificatePage() {
     setConfig(readCertificateConfig());
     setApplicant(readApplicant());
     setCanIssue(can(staff, "certificates.issue"));
-    const application = readApplications().find(
+    // Only someone with applications.view may see the list at all, so the whole
+    // array is withheld rather than filtered row by row.
+    const stored = can(staff, "applications.view") ? readApplications() : [];
+    setAllApplications(stored);
+    const application = stored.find(
       (entry) => entry.applicationNumber.toLowerCase() === reference.trim().toLowerCase(),
     );
     if (application && can(staff, "applications.view")) setRecord(application);
@@ -55,7 +62,10 @@ export default function CertificatePage() {
   }, [ready]);
 
   const persist = useCallback((next: ExportApplication) => {
-    writeApplications(readApplications().map((entry) => (entry.applicationNumber === next.applicationNumber ? next : entry)));
+    const updated = readApplications().map((entry) => (entry.applicationNumber === next.applicationNumber ? next : entry));
+    writeApplications(updated);
+    // The switcher reports per-certificate progress, so it has to see the save.
+    setAllApplications(updated);
     setRecord(next);
   }, []);
 
@@ -104,6 +114,14 @@ export default function CertificatePage() {
             <button className="button button-small" type="button" onClick={() => window.print()}>Print or save as PDF</button>
           </div>
         </div>
+
+        <CertificateSwitcher
+          applications={allApplications}
+          current={record.applicationNumber}
+          config={config}
+          applicant={applicant}
+          canIssue={canIssue}
+        />
 
         <CertificateFieldsForm
           application={record}
