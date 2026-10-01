@@ -33,9 +33,13 @@ export default function CertificateSheet({ certificate, config }: { certificate:
         <div className="cert-modern-footer-grid">
           {fieldEnabled("circulation") ? <div><span className="cert-footer-label">CIRCULATION</span><ol><li>Exporter</li><li>Director FPIS</li><li>Issuing Station</li></ol></div> : null}
           {fieldEnabled("signature") ? <div className="cert-modern-signature"><span>AUTHORIZED BY</span><strong>For: Director</strong><p>Federal Produce Inspection Service</p></div> : null}
-          {fieldEnabled("barcode") ? <CertificateBarcode value={certificate.reference} /> : null}
+          {fieldEnabled("barcode") ? <CertificateBarcode value={certificate.verificationCode} issued={Boolean(certificate.verificationCode)} /> : null}
         </div>
-        <p className="cert-security-note">Digitally generated FPIS record · Verify this certificate using its unique security barcode</p>
+        <p className="cert-security-note">
+          {certificate.verificationCode
+            ? "Digitally generated FPIS record · Verify this certificate at fpis.gov.ng/verify using the code above"
+            : "Digitally generated FPIS record · Save the certificate fields to issue it and assign its verification code"}
+        </p>
       </footer>
     </article>
   );

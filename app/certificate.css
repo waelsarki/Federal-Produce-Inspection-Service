@@ -302,6 +302,20 @@
   letter-spacing: .4px;
 }
 
+/* Shown in the footer's place until the certificate has been issued, so an
+   unissued sheet never carries a symbol that looks scannable. */
+.cert-barcode-pending { text-align: center; }
+.cert-barcode-pending-mark {
+  margin: 0 auto;
+  padding: 1.4mm 0;
+  border: .3mm dashed #9aa8a0;
+  color: #7c8880;
+  font-size: 6.5pt;
+  font-weight: 700;
+  letter-spacing: .6px;
+}
+.cert-barcode-pending .cert-barcode-caption { color: #7c8880; font-size: 5.5pt; }
+
 .cert-specimen {
   margin: 3mm 0 0;
   color: #7a4a3a;
@@ -396,4 +410,27 @@
 .cert-field.is-blank input, .cert-field.is-blank textarea { border-color: #ddb9b2; }
 .cert-fields-actions { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; padding-top: 15px; border-top: 1px solid var(--line); }
 .cert-fields-note { margin: 12px 0 0; color: var(--muted); font-size: 9.5px; line-height: 1.6; }
+
+/* The issued certificate's identity, read back so staff can see the code
+   without reading it off the printed sheet. */
+.cert-identity {
+  display: flex; flex-wrap: wrap; gap: 14px 24px; align-items: center; justify-content: space-between;
+  margin-top: 18px; padding: 14px 16px; background: #f2f7f3;
+  border: 1px solid #cadbce; border-left: 3px solid var(--green); border-radius: 3px;
+}
+.cert-identity-label { display: block; color: var(--muted); font-size: 9px; font-weight: 800; letter-spacing: .8px; }
+.cert-identity-code {
+  display: block; margin-top: 4px; font-family: "Courier New", monospace;
+  font-size: 15px; font-weight: 700; letter-spacing: 1.2px; color: #1d3b2a; word-break: break-all;
+}
+.cert-identity-note { flex: 1 1 320px; margin: 0; color: var(--muted); font-size: 9.5px; line-height: 1.6; }
+.cert-identity-note a { color: var(--green); }
 @media (max-width: 700px) { .cert-fields { padding: 16px 14px 18px; } .cert-fields-grid { grid-template-columns: 1fr; } }
+
+/* The create-and-switch panel above the fields form. It reuses the staff
+   console's toolbar, search, filter and card classes, so only the two rules
+   specific to this panel are declared here. */
+.cert-switcher { margin-bottom: 18px; }
+/* Marks the certificate the officer currently has open, so the list does not
+   read as a set of things still to do. */
+.cert-switcher-here { padding: 2px 7px; background: #e2ede6; border: 1px solid #cadbce; border-radius: 999px; color: #17543f; font-size: 8.5px; font-weight: 800; letter-spacing: .5px; text-transform: uppercase; }

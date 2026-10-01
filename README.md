@@ -39,7 +39,7 @@ Every section of the Federal Produce Inspection Service is reproduced inside thi
 | `/information` | Index of all reference pages, grouped by section |
 | `/information/<slug>` | The reference pages themselves (35 of them) |
 | `/quick-links` | Full site directory, mirroring the agency's own menu |
-| `/verify` | Check the status of a certificate or application reference |
+| `/verify` | Verify a certificate by the code under its barcode, or look up a record by reference |
 
 Sections covered: About (including Vision, Mission & Mandate), Services, SOP (export guideline, statutory functions, operational areas, warehouse and port procedures, warehouse registration, costs, enforcement powers, offences, commodity and prohibited lists, glossary), Section of FPIS (all seven units), Publications (news, press releases, circulars, events, staff training, gallery) and History and Contact.
 
@@ -86,10 +86,32 @@ The sheet is laid out to match the Service's printed certificate:
 **Where the sheet comes from**
 
 - `components/CertificateSheet.tsx` renders the entry layer; `app/certificate.css` positions it on the page in millimetres so screen and print match the paper.
-- `components/CertificateBarcode.tsx` draws the register reference as a Code 39 symbol in the footer. `lib/barcode.ts` holds the encoder: Code 39 because it is self-checking, every ordinary scanner reads it, and its alphabet covers the digits, letters and separators in an FPIS reference. The symbol is sized in millimetres (0.25mm module, 9mm bar height) with the 10-module quiet zones the standard requires, so it scans the same on screen and on the printed A4. Anything outside the symbology is substituted for a hyphen, and `*` is reserved so encoded data cannot inject its own start/stop delimiters.
+- `components/CertificateBarcode.tsx` draws the certificate's **verification code** as a Code 39 symbol in the footer. `lib/barcode.ts` holds the encoder: Code 39 because it is self-checking, every ordinary scanner reads it, and its alphabet covers the digits, letters and separators in an FPIS code. The symbol is sized in millimetres (0.25mm module, 9mm bar height) with the 10-module quiet zones the standard requires, so it scans the same on screen and on the printed A4. Every character of a verification code is inside the symbology, so nothing is substituted away; the caption underneath is the grouped, human-readable form of the same characters the bars encode.
 - `public/images/fpis-crest.png` and `public/images/fpis-logo.png` are the national crest and the Service emblem, taken from the letterhead of the supplied certificate and cleaned so that only the artwork is left. The security micro-text and the watermark are drawn by `app/certificate.css` around them, so the letterhead stays sharp at any zoom and in print.
 - `lib/certificate.ts` turns an application into a certificate: kilogram weights become MTS to three decimals, dates become `DD/MM/YYYY`, the issue date takes its ordinal form, the certificate number and register reference are derived from the application number (so one application always shows the same pair), the station code in the reference comes from the port of loading, and `QUALITY ANALYSIS OF EXPORT` repeats the grade recorded on the application.
 - Fields the application does not collect yet — bill of lading details after sailing, for example — print as the empty dotted rule the paper form carries until an officer fills them in.
+
+**Verification codes** (`lib/certificate-code.ts`)
+
+The register reference is *derived from the application number*, which makes it a useful filing label but worthless as proof: anyone who knows the application number can work out the reference and the number on the sheet. The barcode therefore does not encode it. It encodes a **verification code** minted for that one certificate when it is issued, and `/verify` looks the certificate up by that code.
+
+- **Unpredictable.** 16 characters drawn from `crypto.getRandomValues` — 80 bits, so a code cannot be guessed or derived from the application it belongs to. There is deliberately no `Math.random` fallback: it would still produce a well-formed code, so the downgrade would be invisible on the certificate while removing the only thing that makes the code worth anything. Where Web Crypto is missing the function refuses.
+- **Unique.** The alphabet is Crockford-style base 32 — the digits and letters minus **I, L, O and U**, the four people misread as 1, 0 and V, which is why a code copied off a printout by hand still resolves. A freshly minted code is checked against every other application in the browser before it is accepted. 20,000 minted codes were all distinct.
+- **Stable.** The code and the issue date are written together on the first save and read back on every print after it, so correcting a field or reprinting cannot change the code the first copy carried.
+- **Mistake-proof.** The last character is a weighted check. Its weights are all odd so each is invertible modulo 32, which is what guarantees that **every single mistyped character is caught** — verified over all 31,620 single-character substitutions of 60 codes. Two adjacent characters that sit exactly 16 places apart in the alphabet can still swap undetected (about 9% of transpositions); such a code is still reported as *no certificate matches*, because the lookup is an exact comparison, so it fails safe rather than falsely matching.
+- **Not issued, not printed.** Before issue there is no code, so the footer shows a "not yet issued" panel rather than a symbol that looks scannable and resolves to nothing.
+
+**Verifying** (`app/verify/page.tsx`)
+
+The form accepts a code and reports four distinct outcomes, because conflating them is what made the old page misleading:
+
+- A **valid** code shows the reference, exporter, commodity, destination, both weights, the grade and the issue date.
+- A **well-formed but unrecognised** code is reported as "no certificate matches", explicitly noting the code itself read correctly.
+- A **mistyped** code is reported as a likely typing or scanning error, with the reason, rather than as a missing certificate.
+- A code belonging to a record that has not been issued is reported as such, not as a match.
+- The register reference is still accepted, but is labelled as the weaker lookup it is: it locates a record without evidencing that the Service issued the certificate.
+
+Entered text is normalised, so lower case, the printed hyphens, stray spaces and the four excluded letters all resolve to the same code. The page also states plainly that this reads one browser's records and is not the Service's register.
 
 **Printing.** "Print or save as PDF" prints the sheet on its own at A4 with the security paper intact; on screen the sheet scales down to fit narrow windows.
 
@@ -191,7 +213,7 @@ Verified with a headless sweep of all four routes (`/staff`, `/staff/login`, `/c
 
 - This front-end prototype stores one applicant profile and application records in the current browser's local storage. It is not production authentication or durable storage.
 - Staff sign-in has the same limits: seeded accounts are local to one browser, the session is a sessionStorage flag that is trivially forged, and role checks happen in the browser rather than on a server.
-- Payment checkout and evidence review, creating and editing staff accounts, official certificate issuance (the certificate sheet is a specimen generated in the browser), and secure barcode verification are not connected.
+- Payment checkout and evidence review, creating and editing staff accounts, and official certificate issuance (the certificate sheet is a specimen generated in the browser) are not connected. Each certificate now has its own unpredictable verification code and `/verify` resolves it, but resolution is against one browser's local storage, so it demonstrates the mechanism rather than confirming authenticity with FPIS.
 - Approval decisions run in the browser against browser storage. Super Admin is exempt from role binding and from the approval quota, so a single person can approve an application alone; and the decision trail is not tamper-evident. Both need a server before they mean anything.
 - Generated references are preview identifiers, not official FPIS application or certificate numbers. The certificate number, register reference and station code on the specimen are derived from the application for display only.
 - The Overview's Recent activity feed is derived from application records, not an event log. It shows each application's current status and its submission date; it cannot show who approved or issued anything, or when that happened. A real activity trail needs server-side event recording.

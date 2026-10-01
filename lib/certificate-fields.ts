@@ -10,6 +10,7 @@
 
 import type { CertificateData, ExportApplication } from "@/lib/portal";
 import type { CertificateFieldConfig, CertificateFieldId } from "@/lib/certificate-config";
+import { mintVerificationCode } from "@/lib/certificate-code";
 
 export type CertificateInputId = keyof CertificateData;
 
@@ -180,7 +181,9 @@ export function resolveCertificateData(
   const merged: Record<string, string | undefined> = { ...applicationValues(application) };
   const override = application.certificateData ?? {};
   for (const [key, value] of Object.entries(override)) {
-    if (key === "issuedAt" || key === "issuedBy") continue;
+    // Identity fields, not printable values: the sheet reads them from the
+    // application directly rather than through the resolved field set.
+    if (key === "issuedAt" || key === "issuedBy" || key === "verificationCode") continue;
     if (typeof value === "string" && value.trim()) merged[key] = value;
   }
   merged.exporterOrganization = merged.exporterOrganization || exporter?.organization || "";
@@ -194,6 +197,32 @@ export function issuedAtFor(application: ExportApplication, fallback: Date): Dat
   if (!stored) return fallback;
   const parsed = new Date(stored);
   return Number.isFinite(parsed.getTime()) ? parsed : fallback;
+}
+
+/**
+ * The identity a certificate carries once issued: when it was issued, and the
+ * code its barcode encodes. Both are written on the first save and read back on
+ * every print after it, so re-saving corrected values or reprinting cannot move
+ * the date or change the code the first copy carried.
+ *
+ * `siblings` is every other application in the browser, so a freshly minted code
+ * is checked against the codes already in use.
+ */
+export function issuanceFor(
+  application: ExportApplication,
+  siblings: ExportApplication[] = [],
+  now: Date = new Date(),
+): { issuedAt: string; verificationCode: string } {
+  const existing = application.certificateData;
+  return {
+    issuedAt: existing?.issuedAt ?? now.toISOString(),
+    verificationCode: existing?.verificationCode
+      ?? mintVerificationCode(
+        siblings
+          .filter((entry) => entry.applicationNumber !== application.applicationNumber)
+          .map((entry) => entry.certificateData?.verificationCode ?? ""),
+      ),
+  };
 }
 
 /** Required fields still blank, in section order. */

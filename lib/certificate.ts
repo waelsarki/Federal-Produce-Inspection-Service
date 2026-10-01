@@ -34,6 +34,11 @@ export type CertificateGroup = { marker: string; indent?: boolean; rows: Certifi
 export type CertificateDocument = {
   serialNumber: string;
   reference: string;
+  /**
+   * The code the security barcode encodes. Empty until the certificate has been
+   * issued; it is minted once and then never changes. See lib/certificate-code.ts.
+   */
+  verificationCode: string;
   issueDate: Date;
   qualityAnalysis: string;
   exporterLines: string[];
@@ -158,6 +163,7 @@ export function buildCertificate(
   application: ExportApplication,
   exporter: { organization?: string; address?: string } | null,
   issuedAt: Date,
+  verificationCode = "",
 ): CertificateDocument {
   const seed = fnv1a(application.applicationNumber);
   const portOfLoading = application.portOfLoading?.trim() ?? "";
@@ -170,6 +176,7 @@ export function buildCertificate(
   return {
     serialNumber: String(10000 + (fnv1a(application.applicationNumber, seed ^ 0x85ebca6b) % 90000)),
     reference: `FP//${stationCodeFor(portOfLoading)}/VOL..${toRoman(seed % ROMAN_VOLUMES.length)}/${1000 + (fnv1a(application.applicationNumber, seed ^ 0x9e3779b9) % 9000)}`,
+    verificationCode,
     issueDate: issuedAt,
     qualityAnalysis: grade.toUpperCase(),
     exporterLines: addressLines(exporter?.organization ?? "", exporter?.address ?? ""),

@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import Link from "next/link";
 import { useParams } from "next/navigation";
@@ -6,6 +6,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import CertificateSheet from "@/components/CertificateSheet";
 import CertificateFieldsForm from "@/components/admin/CertificateFieldsForm";
 import { buildCertificate } from "@/lib/certificate";
+import { formatVerificationCode } from "@/lib/certificate-code";
 import { issuedAtFor, resolveCertificateData } from "@/lib/certificate-fields";
 import { CertificateFieldConfig, readCertificateConfig } from "@/lib/certificate-config";
 import {
@@ -71,6 +72,7 @@ export default function CertificatePage() {
       source,
       { organization: resolved.exporterOrganization, address: resolved.exporterAddress },
       issuedAtFor(record, new Date()),
+      record.certificateData?.verificationCode ?? "",
     );
   }, [record, applicant]);
 
@@ -110,6 +112,19 @@ export default function CertificatePage() {
           canIssue={canIssue}
           onSave={persist}
         />
+        {record.certificateData?.verificationCode ? (
+          <div className="cert-identity">
+            <div>
+              <span className="cert-identity-label">VERIFICATION CODE</span>
+              <strong className="cert-identity-code">{formatVerificationCode(record.certificateData.verificationCode)}</strong>
+            </div>
+            <p className="cert-identity-note">
+              This code is what the security barcode on the sheet encodes, and it is what a third party enters at{" "}
+              <Link href="/verify">the verify page</Link>. It was assigned when the certificate was issued and does
+              not change if the fields are corrected or the sheet is reprinted.
+            </p>
+          </div>
+        ) : null}
 
         <div className="cert-viewport" ref={viewport}>
           <div className="cert-scale" style={{ transform: `scale(${scale})`, height: Math.round(SHEET_HEIGHT_PX * scale) }}>

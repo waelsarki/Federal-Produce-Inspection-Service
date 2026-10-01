@@ -78,6 +78,11 @@ export type CertificateData = {
   /** ISO date the certificate was issued, fixed on first save. */
   issuedAt?: string;
   issuedBy?: string;
+  /**
+   * The code the security barcode encodes, minted once when the certificate is
+   * issued and read back on every later print. See lib/certificate-code.ts.
+   */
+  verificationCode?: string;
 };
 
 /**

@@ -5,13 +5,14 @@ import { AlertTriangle, CheckCircle2 } from "lucide-react";
 import {
   CERTIFICATE_SECTIONS,
   configuredCertificateInputs,
+  issuanceFor,
   issuedAtFor,
   missingRequiredFields,
   resolveCertificateData,
   type ConfiguredCertificateInput,
 } from "@/lib/certificate-fields";
 import type { CertificateFieldConfig } from "@/lib/certificate-config";
-import type { ApplicantProfile, ExportApplication } from "@/lib/portal";
+import { ApplicantProfile, ExportApplication, readApplicant, readApplications } from "@/lib/portal";
 
 /**
  * Lets a staff member complete the values only an inspector knows, and save
@@ -61,8 +62,9 @@ export default function CertificateFieldsForm({
       certificateData: {
         ...application.certificateData,
         ...Object.fromEntries(Object.entries(values).map(([key, value]) => [key, value.trim()])),
-        // Fixed on first save so the printed issue date does not drift.
-        issuedAt: application.certificateData?.issuedAt ?? new Date().toISOString(),
+        // Issue date and verification code are fixed together on the first
+        // save, so a corrected re-save or a reprint keeps both.
+        ...issuanceFor(application, readApplications()),
       },
     };
     onSave(next);
