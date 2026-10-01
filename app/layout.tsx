@@ -1,150 +1,37 @@
 import type { Metadata } from "next";
-import type { CSSProperties } from "react";
-import Link from "next/link";
-import { FacebookIcon, InstagramIcon, LinkedInIcon, YouTubeIcon } from "@/components/BrandIcons";
-import QuickLinkItem from "@/components/QuickLinkItem";
-import QuickLinksMenu from "@/components/QuickLinksMenu";
-import { FPIS_ESERVICES, FPIS_FOOTER_LINK_GROUPS } from "@/lib/quicklinks";
 import "./globals.css";
 import "./hero-overrides.css";
-import "./quicklinks.css";
-import "./information.css";
 import "./certificate.css";
+import "./certificate-modern.css";
 import "./footer-overrides.css";
+import "./portal-shell.css";
+import "./staff/staff-dashboard.css";
+import "./staff/login/staff-login.css";
 
 export const metadata: Metadata = {
-  title: "FPIS | Produce Export Certification",
-  description: "Apply for produce inspection and manage export certification with FPIS.",
-  icons: {
-    icon: "/icon.png",
-    shortcut: "/icon.png",
-    apple: "/icon.png",
-  },
+  title: "FPIS Certificate Portal",
+  description: "Federal Produce Inspection Service certificate generation and review portal.",
+  icons: { icon: "/icon.png", shortcut: "/icon.png", apple: "/icon.png" },
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en">
       <body>
-        <header className="site-header">
-          <Link className="brand" href="/" aria-label="FPIS home">
-            <img className="brand-logo" src="/images/fpis-logo.png" alt="" />
-            <span className="brand-copy"><strong>FPIS</strong><small>Federal Produce Inspection Service</small></span>
-          </Link>
-          <nav className="main-nav" aria-label="Main navigation">
-            <ul>
-              <li><Link href="/">Overview</Link></li>
-              <li><a href="/#services">Services</a></li>
-              <li><a href="/#process">Application process</a></li>
-              <QuickLinksMenu />
-            </ul>
-          </nav>
-          <div className="header-actions">
-            <Link className="text-link" href="/login">Applicant login</Link>
-            <Link className="button button-small" href="/register">Start an application <span aria-hidden="true">↗</span></Link>
+        <header className="portal-header">
+          <div className="portal-brand" aria-label="Federal Produce Inspection Service">
+            <img src="/images/fpis-logo.png" alt="" />
+            <span><strong>FPIS</strong><small>Federal Produce Inspection Service</small></span>
           </div>
+          <div className="portal-header-status"><span className="portal-status-dot" /> CERTIFICATE PORTAL</div>
         </header>
         <main>{children}</main>
-        <footer className="site-directory" aria-labelledby="quick-links-heading">
-          <div className="directory-intro">
-            <p className="eyebrow">FEDERAL PRODUCE INSPECTION SERVICE</p>
-            <h2 id="quick-links-heading">Quick links</h2>
-            <p>About the service, what it does, and the procedures, levies and standards that apply to your export.</p>
-            <ul className="eservice-list">
-              {FPIS_ESERVICES.map((link) => (
-                <li key={link.label}><QuickLinkItem link={link} showDescription /></li>
-              ))}
-            </ul>
-            <div className="directory-actions">
-              <Link className="text-link" href="/information">Information centre →</Link>
-              <Link className="text-link" href="/quick-links">View all quick links →</Link>
-            </div>
-          </div>
-          <div className="directory-groups">
-            {FPIS_FOOTER_LINK_GROUPS.map((group) => (
-              <div className="directory-group" key={group.label}>
-                <h3>{group.label}</h3>
-                <ul>
-                  {group.links.map((link) => <li key={link.label}><QuickLinkItem link={link} /></li>)}
-                </ul>
-                {group.sections.map((section) => (
-                  <div className="directory-subsection" key={section.label}>
-                    <h4>{section.label}</h4>
-                    <ul>
-                      {section.links.map((link) => <li key={link.label}><QuickLinkItem link={link} /></li>)}
-                    </ul>
-                  </div>
-                ))}
-              </div>
-            ))}
-          </div>
-          <div className="directory-contact">
-            <div>
-              <span>National Administrative Headquarter</span>
-              <p>Federal Ministry of Industry, Trade &amp; Investment, Block C, Old Garki, Abuja, Federal Capital Territory.</p>
-              <p><a href="tel:+2348033358961">+234 803 335 8961</a><a href="tel:+2348033352974">+234 803 335 2974</a><a href="mailto:info@fpis.com">info@fpis.com</a></p>
-            </div>
-            <div>
-              <span>National Operational Headquarter</span>
-              <p>No. 1, NEPA / PHCN Road, Ijora-Olopa, Lagos, Lagos State.</p>
-              <p><a href="tel:+2348032324786">+234 803 232 4786</a><a href="mailto:info@fpis.com">info@fpis.com</a></p>
-            </div>
-            <div>
-              <span>Guidance on applications</span>
-              <p>Federal Produce Inspection Service, Ijora-Olopa, Lagos.</p>
-              <p><a href="tel:+2348032324786">0803 232 4786</a><a href="tel:+2348023167442">0802 316 7442</a><a href="mailto:jimhya22@yahoo.com">jimhya22@yahoo.com</a></p>
-            </div>
-          </div>
-        </footer>
-        <footer className="site-footer">
+        <footer className="portal-footer">
           <span>Federal Produce Inspection Service</span>
           <span>Federal Ministry of Industry, Trade &amp; Investment</span>
-          <span><Link href="/information">Information centre</Link></span>
-          <span><Link href="/staff/login">Staff login</Link></span>
-          <nav className="social-links" aria-label="FPIS social media">
-            <a
-              href="https://www.facebook.com/"
-              target="_blank"
-              rel="noreferrer"
-              aria-label="FPIS on Facebook"
-              title="Facebook"
-              style={{ "--brand": "#1877f2" } as CSSProperties}
-            >
-              <FacebookIcon width={16} height={16} />
-            </a>
-            <a
-              href="https://www.instagram.com/"
-              target="_blank"
-              rel="noreferrer"
-              aria-label="FPIS on Instagram"
-              title="Instagram"
-              style={{ "--brand": "#d6336c" } as CSSProperties}
-            >
-              <InstagramIcon width={16} height={16} />
-            </a>
-            <a
-              href="https://www.linkedin.com/"
-              target="_blank"
-              rel="noreferrer"
-              aria-label="FPIS on LinkedIn"
-              title="LinkedIn"
-              style={{ "--brand": "#0a66c2" } as CSSProperties}
-            >
-              <LinkedInIcon width={16} height={16} />
-            </a>
-            <a
-              href="https://www.youtube.com/"
-              target="_blank"
-              rel="noreferrer"
-              aria-label="FPIS on YouTube"
-              title="YouTube"
-              style={{ "--brand": "#d02f2f" } as CSSProperties}
-            >
-              <YouTubeIcon width={17} height={17} />
-            </a>
-          </nav>
+          <span>Secure certificate operations</span>
         </footer>
       </body>
     </html>
-  );
+  )
 }

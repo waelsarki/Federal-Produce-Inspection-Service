@@ -1,0 +1,42 @@
+.cert-modern { background: #f8faf7; border: 1px solid #c9d6cc; font-family: "DM Sans", Arial, sans-serif; color: #182a22; }
+.cert-modern .cert-paper { background-image: radial-gradient(#1b604214 .45px, transparent .45px); background-size: 5mm 5mm; opacity: .55; }
+.cert-modern .cert-watermark { top: 51%; width: 110mm; opacity: .06; }
+.cert-modern-header { position: relative; display: grid; grid-template-columns: 29mm 1fr 29mm; align-items: center; gap: 5mm; margin: 12mm 14mm 0; padding-bottom: 6mm; border-bottom: 1.5px solid #b89550; text-align: center; }
+.cert-modern-crest, .cert-modern-logo { width: 27mm; height: 27mm; object-fit: contain; }
+.cert-modern-heading { display: grid; gap: 1.2mm; }
+.cert-modern-heading p, .cert-modern-heading strong, .cert-modern-heading span { margin: 0; }
+.cert-modern-heading p { font-family: Georgia, serif; font-size: 9.5pt; font-weight: 700; }
+.cert-modern-heading strong { color: #17543f; font-family: Georgia, serif; font-size: 11pt; letter-spacing: .4px; }
+.cert-modern-heading span { color: #69736d; font-size: 8pt; font-weight: 600; }
+.cert-modern-meta { position: relative; display: grid; grid-template-columns: 1fr 1fr auto; gap: 7mm; margin: 7mm 14mm 0; padding: 4mm 5mm; background: #e9f0ec; border-left: 3px solid #17543f; }
+.cert-modern-meta div { display: grid; gap: 1mm; }
+.cert-modern-meta span, .cert-verdict-box span, .cert-footer-label, .cert-modern-signature span { color: #65756c; font-size: 6.5pt; font-weight: 800; letter-spacing: .8px; text-transform: uppercase; }
+.cert-modern-meta strong { color: #173f31; font-family: "Courier New", monospace; font-size: 8.5pt; }
+.cert-modern-serial { text-align: right; }
+.cert-modern-title { position: relative; margin: 9mm 14mm 0; text-align: center; }
+.cert-modern-title p { margin: 0 0 1.2mm; color: #b89550; font-size: 7pt; font-weight: 800; letter-spacing: 1.5px; }
+.cert-modern-title h1 { margin: 0; color: #143f2f; font-family: Georgia, serif; font-size: 16pt; line-height: 1.28; text-transform: uppercase; }
+.cert-modern-rule { position: relative; width: 18mm; height: 1mm; margin: 4mm auto 5mm; background: #b89550; }
+.cert-modern-body { position: relative; display: grid; grid-template-columns: 1fr 1fr; align-content: start; gap: 3mm 5mm; margin: 0 14mm; }
+.cert-modern-group { display: grid; grid-template-columns: 9mm 1fr; gap: 2mm; min-height: 20mm; padding: 3mm; background: #fff; border: 1px solid #d5e0d7; border-radius: 1mm; }
+.cert-modern-marker { color: #b89550; font-family: Georgia, serif; font-size: 11pt; font-weight: 700; }
+.cert-modern-group h2 { margin: 0 0 2mm; color: #17543f; font-size: 8pt; letter-spacing: .7px; text-transform: uppercase; }
+.cert-modern .cert-line { display: grid; grid-template-columns: minmax(0, 1fr); gap: .6mm; min-height: 7mm; margin: 0; padding: 1.2mm 0; border-top: 1px solid #edf1ed; }
+.cert-modern .cert-label { color: #718078; font-size: 6.5pt; white-space: normal; }
+.cert-modern .cert-value { color: #17211d; font-size: 8pt; font-weight: 700; }
+.cert-modern .cert-tail { display: inline-flex; gap: 2mm; align-items: baseline; margin-right: 4mm; }
+.cert-modern .cert-note { margin: 2mm 0 0; color: #9c6c2c; font-size: 6.5pt; font-style: italic; }
+.cert-modern-footer { position: relative; margin: 5mm 14mm 0; }
+.cert-verdict-box { display: flex; align-items: center; justify-content: space-between; gap: 5mm; padding: 3mm 4mm; color: #fff; background: #17543f; }
+.cert-verdict-box span { color: #d8e8dc; }
+.cert-verdict-box strong { font-size: 9pt; letter-spacing: .8px; }
+.cert-modern-footer-grid { display: grid; grid-template-columns: 1fr 1fr auto; align-items: start; gap: 8mm; margin-top: 5mm; }
+.cert-modern-footer-grid ol { margin: 2mm 0 0; padding-left: 5mm; font-size: 7.5pt; line-height: 1.55; }
+.cert-modern-signature { display: grid; gap: 1.5mm; text-align: center; }
+.cert-modern-signature strong { margin-top: 6mm; border-top: 1px solid #7b8e82; padding-top: 2mm; font-family: Georgia, serif; font-size: 8pt; }
+.cert-modern-signature p { margin: 0; color: #65756c; font-size: 7pt; }
+.cert-modern .cert-barcode { margin: 0; }
+.cert-modern .cert-barcode-symbol { max-width: 38mm; height: 11mm; }
+.cert-modern .cert-barcode-caption { font-size: 5.5pt; }
+.cert-security-note { margin: 4mm 0 0; color: #718078; text-align: center; font-size: 6pt; letter-spacing: .3px; }
+@media (max-width: 620px) { .cert-modern-header { margin-left: 8mm; margin-right: 8mm; } .cert-modern-body { grid-template-columns: 1fr; margin-left: 8mm; margin-right: 8mm; } .cert-modern-meta, .cert-modern-title, .cert-modern-footer { margin-left: 8mm; margin-right: 8mm; } }

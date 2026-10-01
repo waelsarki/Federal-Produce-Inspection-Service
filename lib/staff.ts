@@ -304,3 +304,12 @@ export function resetWorkflow(): ApprovalLevel[] {
   writeJson(STAFF_WORKFLOW_KEY, DEFAULT_WORKFLOW);
   return readWorkflow();
 }
+
+export function updateStaffProfile(accountId: string, fullName: string, email: string): string | null {
+  const accounts = seedSuperAdmin();
+  const normalizedEmail = email.trim().toLowerCase();
+  if (!fullName.trim() || !normalizedEmail) return "Name and email are required.";
+  if (accounts.some((account) => account.id !== accountId && account.email === normalizedEmail)) return "That email is already assigned to another staff account.";
+  writeJson(STAFF_KEY, accounts.map((account) => account.id === accountId ? { ...account, fullName: fullName.trim(), email: normalizedEmail } : account));
+  return null;
+}

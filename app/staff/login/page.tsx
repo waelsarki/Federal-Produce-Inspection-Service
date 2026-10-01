@@ -31,21 +31,23 @@ export default function StaffLoginPage() {
   return (
     <>
       <div className="prototype-notice"><strong>Development preview</strong><span>Staff accounts are stored in this browser only and are not production authentication.</span></div>
-      <section className="login-page">
-        <div className="login-heading">
-          <p className="eyebrow">STAFF PORTAL</p>
-          <h1>Staff <em>sign in.</em></h1>
-          <p>Sign in to reach the super admin console, the inspection review queue and official certificate issuance.</p>
-          <div className="form-aside"><span className="aside-mark">i</span><span>Staff access is separate from an applicant account. Applicants sign in from the applicant dashboard.</span></div>
+      <section className="portal-login-page">
+        <div className="portal-login-intro">
+          <div className="portal-login-mark"><img src="/images/fpis-logo.png" alt="Federal Produce Inspection Service" /></div>
+          <p className="eyebrow">CERTIFICATE OPERATIONS / STAFF ACCESS</p>
+          <h1>Issue with<br /><em>confidence.</em></h1>
+          <p>Review applications, configure the official certificate template and release secure documents from one controlled workspace.</p>
+          <div className="login-capabilities"><span><b>01</b> Review and approve</span><span><b>02</b> Generate and print</span><span><b>03</b> Manage access roles</span></div>
         </div>
-        <form className="form-panel login-panel" onSubmit={handleSubmit}>
-          <div className="form-heading"><span>STAFF ACCESS</span><span>{SUPERADMIN_EMAIL}</span></div>
+        <form className="form-panel portal-login-panel" onSubmit={handleSubmit}>
+          <div className="form-heading"><span>AUTHORIZED STAFF</span><span><i className="secure-dot" /> SECURE ENTRY</span></div>
+          <h2>Welcome back</h2><p className="login-panel-copy">Use your FPIS staff credentials to continue.</p>
           <div className="field"><label htmlFor="staff-email">Staff email address</label><input id="staff-email" name="email" type="email" autoComplete="username" maxLength={254} required placeholder="name@fpis.gov.ng" /></div>
           <PasswordField id="staff-password" name="password" label="Password" autoComplete="current-password" placeholder="Your password" />
           {error ? <p className="validation-summary" role="alert">{error}</p> : null}
-          <button className="button form-submit" type="submit">Sign in <span aria-hidden="true">→</span></button>
+          <button className="button form-submit" type="submit">Enter certificate portal <span aria-hidden="true">→</span></button>
           <p className="form-footnote">Seeded accounts this browser: <strong>{seededCount ?? "…"}</strong></p>
-          <p className="form-footnote">An applicant instead? <Link href="/login">Sign in to the applicant dashboard</Link></p>
+          <p className="form-footnote">Only authorized FPIS staff accounts can enter this portal.</p>
         </form>
       </section>
     </>

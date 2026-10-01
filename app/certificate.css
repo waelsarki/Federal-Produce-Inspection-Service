@@ -285,6 +285,23 @@
   margin: 0;
 }
 
+.cert-barcode {
+  margin: 2.5mm 0 0;
+}
+
+.cert-barcode-symbol {
+  display: block;
+  margin: 0 auto;
+}
+
+.cert-barcode-caption {
+  margin: .6mm 0 0;
+  text-align: center;
+  font-family: "Courier New", monospace;
+  font-size: 6pt;
+  letter-spacing: .4px;
+}
+
 .cert-specimen {
   margin: 3mm 0 0;
   color: #7a4a3a;
@@ -332,8 +349,10 @@
   }
 
   .site-header,
+  .portal-header,
   .site-directory,
   .site-footer,
+  .portal-footer,
   .prototype-notice,
   .cert-page-head,
   .cert-actions {

@@ -37,7 +37,7 @@ export default function VerifyPage() {
               <span className="empty-symbol">—</span>
               <h2>No matching record</h2>
               <p>No application in this browser matches that reference. Check the reference, or sign in to your dashboard to see the applications you submitted.</p>
-              <Link className="text-link" href="/login">Sign in to dashboard →</Link>
+              <Link className="text-link" href="/staff/login">Open staff portal →</Link>
             </div>
           ) : null}
           {result.searched && result.found && result.application ? (
@@ -53,7 +53,7 @@ export default function VerifyPage() {
               <p className="info-note"><strong>Not an official certificate</strong><span>This is an application record from your own browser. No official FPIS certificate has been issued for it.</span></p>
             </div>
           ) : null}
-          <p className="form-footnote">Looking to apply instead? <Link href="/register">Register and start an application</Link></p>
+          <p className="form-footnote">Only authorized FPIS staff can verify certificate records.</p>
         </form>
       </section>
     </>

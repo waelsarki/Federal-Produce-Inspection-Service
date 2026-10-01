@@ -1,4 +1,5 @@
 import type { ApplicantProfile, ExportApplication } from "./portal";
+import { certificateFieldEnabled, certificateFieldLabel, CertificateFieldConfig } from "./certificate-config";
 
 export const CERTIFICATE_FUMIGATION_NOTE = "Fumigation should be repeated after expiration of 21 days";
 export const CERTIFICATE_DEFAULT_GRADE = "EXPORTABLE QUALITY";
@@ -190,54 +191,59 @@ export function buildCertificate(application: ExportApplication, applicant: Appl
   };
 }
 
-export function certificateGroups(document: CertificateDocument): CertificateGroup[] {
+export function certificateGroups(document: CertificateDocument, config?: CertificateFieldConfig[]): CertificateGroup[] {
+  const enabled = (id: Parameters<typeof certificateFieldEnabled>[1]) => certificateFieldEnabled(config, id);
+  const label = (id: Parameters<typeof certificateFieldLabel>[1], fallback: string) => certificateFieldLabel(config, id, fallback);
   const addressed = (lines: string[], label: string): CertificateRow[] =>
     lines.map((line, index) => (index === 0 ? { kind: "field" as const, label, value: line } : { kind: "continuation" as const, value: line }));
 
   return [
-    { marker: "(1)", rows: addressed(document.exporterLines, "Exporters Name & Address:") },
-    { marker: "(2)", rows: addressed(document.consigneeLines, "Consignee's Name & Address:") },
-    { marker: "(3)", rows: addressed(document.commodityLines, "Description of Commodity:") },
+    enabled("exporter") ? { marker: "(1)", rows: addressed(document.exporterLines, `${label("exporter", "Exporter name & address")}:`) } : null,
+    enabled("consignee") ? { marker: "(2)", rows: addressed(document.consigneeLines, `${label("consignee", "Consignee name & address")}:`) } : null,
+    enabled("commodity") ? { marker: "(3)", rows: addressed(document.commodityLines, `${label("commodity", "Description of commodity")}:`) } : null,
     {
       marker: "(4)",
       indent: true,
       rows: [
-        { kind: "field", label: "(i) Date of Fumigation (Date off-sheeted):", value: document.fumigationDate },
-        { kind: "field", label: "(ii) Fumigant applied:", value: document.fumigant },
-        { kind: "note", text: CERTIFICATE_FUMIGATION_NOTE },
-      ],
+        enabled("fumigationDate") ? { kind: "field", label: `(i) ${label("fumigationDate", "Date of fumigation")}:`, value: document.fumigationDate } : null,
+        enabled("fumigant") ? { kind: "field", label: `(ii) ${label("fumigant", "Fumigant applied")}:`, value: document.fumigant } : null,
+        enabled("fumigationNote") ? { kind: "note", text: label("fumigationNote", CERTIFICATE_FUMIGATION_NOTE) } : null,
+      ].filter(Boolean) as CertificateRow[],
     },
-    { marker: "(5)", rows: [{ kind: "field", label: "Standard Pack (Weight per bag):", value: document.standardPack }] },
-    {
+    enabled("standardPack") ? { marker: "(5)", rows: [{ kind: "field", label: `${label("standardPack", "Standard pack / weight per bag")}:`, value: document.standardPack }] } : null,
+    enabled("grossWeight") || enabled("netWeight") ? {
       marker: "(6)",
-      rows: [{ kind: "field", label: "Total Volume of Export:", value: "", tails: [{ label: "GROSS WEIGHT:", value: document.grossWeight }, { label: "NET WEIGHT:", value: document.netWeight }] }],
-    },
+      rows: [{ kind: "field", label: "Total volume of export:", value: "", tails: [
+        enabled("grossWeight") ? { label: `${label("grossWeight", "Gross weight")}:`, value: document.grossWeight } : null,
+        enabled("netWeight") ? { label: `${label("netWeight", "Net weight")}:`, value: document.netWeight } : null,
+      ].filter((tail): tail is CertificateTail => tail !== null) }],
+    } : null,
     {
       marker: "(7)",
       rows: [
-        { kind: "field", label: "(a) Date of Shipment:", value: document.shipmentDate },
-        { kind: "field", label: "(b) Quality (Grade):", value: document.grade },
-      ],
+        enabled("shipmentDate") ? { kind: "field", label: `(a) ${label("shipmentDate", "Date of shipment")}:`, value: document.shipmentDate } : null,
+        enabled("grade") ? { kind: "field", label: `(b) ${label("grade", "Quality / grade")}:`, value: document.grade } : null,
+      ].filter(Boolean) as CertificateRow[],
     },
-    { marker: "(8)", rows: [{ kind: "field", label: "Condition of Packaging Materials:", value: document.packagingCondition }] },
+    enabled("packagingCondition") ? { marker: "(8)", rows: [{ kind: "field", label: `${label("packagingCondition", "Condition of packaging materials")}:`, value: document.packagingCondition }] } : null,
     {
       marker: "(9)",
       rows: [
-        { kind: "field", label: "(a) NXP Form No:", value: document.nxpNumber },
-        { kind: "field", label: "(b) Estimated Value of Export:", value: document.estimatedValue },
-      ],
+        enabled("nxpNumber") ? { kind: "field", label: `(a) ${label("nxpNumber", "NXP form number")}:`, value: document.nxpNumber } : null,
+        enabled("estimatedValue") ? { kind: "field", label: `(b) ${label("estimatedValue", "Estimated value of export")}:`, value: document.estimatedValue } : null,
+      ].filter(Boolean) as CertificateRow[],
     },
-    { marker: "(10)", rows: [{ kind: "field", label: "Moisture Content of Commodity:", value: document.moistureContent }] },
+    enabled("moistureContent") ? { marker: "(10)", rows: [{ kind: "field", label: `${label("moistureContent", "Moisture content of commodity")}:`, value: document.moistureContent }] } : null,
     {
       marker: "(11)",
       indent: true,
       rows: [
-        { kind: "field", label: "(i) Name of Vessel:", value: document.vessel, tails: document.voyage ? [{ label: "VOY:", value: document.voyage }] : undefined },
-        { kind: "field", label: "(ii) Destination:", value: document.destination },
-        { kind: "field", label: "(iii) BILL OF LADING NUMBER:", value: document.billOfLadingNumber, tails: document.billOfLadingDate ? [{ label: "Dt.", value: document.billOfLadingDate }] : undefined },
-        { kind: "field", label: "(iv) PORT OF LOADING:", value: document.portOfLoading },
-      ],
+        enabled("vessel") ? { kind: "field", label: `(i) ${label("vessel", "Name of vessel")}:`, value: document.vessel, tails: enabled("voyage") && document.voyage ? [{ label: `${label("voyage", "Voyage")}:`, value: document.voyage }] : undefined } : null,
+        enabled("destination") ? { kind: "field", label: `(ii) ${label("destination", "Destination")}:`, value: document.destination } : null,
+        enabled("billOfLadingNumber") ? { kind: "field", label: `(iii) ${label("billOfLadingNumber", "Bill of lading number")}:`, value: document.billOfLadingNumber, tails: enabled("billOfLadingDate") && document.billOfLadingDate ? [{ label: `${label("billOfLadingDate", "Date")}:`, value: document.billOfLadingDate }] : undefined } : null,
+        enabled("portOfLoading") ? { kind: "field", label: `(iv) ${label("portOfLoading", "Port of loading")}:`, value: document.portOfLoading } : null,
+      ].filter(Boolean) as CertificateRow[],
     },
-  ];
+  ].filter(Boolean) as CertificateGroup[];
 }
 
