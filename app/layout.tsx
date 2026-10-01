@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
+import type { CSSProperties } from "react";
 import Link from "next/link";
-import { AtSign, Camera, Play, Share2 } from "lucide-react";
+import { FacebookIcon, InstagramIcon, LinkedInIcon, YouTubeIcon } from "@/components/BrandIcons";
 import QuickLinkItem from "@/components/QuickLinkItem";
 import QuickLinksMenu from "@/components/QuickLinksMenu";
 import { FPIS_ESERVICES, FPIS_FOOTER_LINK_GROUPS } from "@/lib/quicklinks";
@@ -96,10 +97,46 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
           <span><Link href="/information">Information centre</Link></span>
           <span><Link href="/staff/login">Staff login</Link></span>
           <nav className="social-links" aria-label="FPIS social media">
-            <a href="https://www.facebook.com/" target="_blank" rel="noreferrer" aria-label="FPIS on Facebook" title="Facebook"><Share2 aria-hidden="true" size={16} strokeWidth={1.8} /></a>
-            <a href="https://www.instagram.com/" target="_blank" rel="noreferrer" aria-label="FPIS on Instagram" title="Instagram"><Camera aria-hidden="true" size={16} strokeWidth={1.8} /></a>
-            <a href="https://www.linkedin.com/" target="_blank" rel="noreferrer" aria-label="FPIS on LinkedIn" title="LinkedIn"><AtSign aria-hidden="true" size={16} strokeWidth={1.8} /></a>
-            <a href="https://www.youtube.com/" target="_blank" rel="noreferrer" aria-label="FPIS on YouTube" title="YouTube"><Play aria-hidden="true" size={16} strokeWidth={1.8} /></a>
+            <a
+              href="https://www.facebook.com/"
+              target="_blank"
+              rel="noreferrer"
+              aria-label="FPIS on Facebook"
+              title="Facebook"
+              style={{ "--brand": "#1877f2" } as CSSProperties}
+            >
+              <FacebookIcon width={16} height={16} />
+            </a>
+            <a
+              href="https://www.instagram.com/"
+              target="_blank"
+              rel="noreferrer"
+              aria-label="FPIS on Instagram"
+              title="Instagram"
+              style={{ "--brand": "#d6336c" } as CSSProperties}
+            >
+              <InstagramIcon width={16} height={16} />
+            </a>
+            <a
+              href="https://www.linkedin.com/"
+              target="_blank"
+              rel="noreferrer"
+              aria-label="FPIS on LinkedIn"
+              title="LinkedIn"
+              style={{ "--brand": "#0a66c2" } as CSSProperties}
+            >
+              <LinkedInIcon width={16} height={16} />
+            </a>
+            <a
+              href="https://www.youtube.com/"
+              target="_blank"
+              rel="noreferrer"
+              aria-label="FPIS on YouTube"
+              title="YouTube"
+              style={{ "--brand": "#d02f2f" } as CSSProperties}
+            >
+              <YouTubeIcon width={17} height={17} />
+            </a>
           </nav>
         </footer>
       </body>

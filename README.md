@@ -52,6 +52,17 @@ To add or amend a page, edit `lib/fpis-content.ts` and add its slug to the relev
 
 Pages where FPIS has published no content yet (press releases, circulars, events, staff training, gallery) render the portal's standard empty state rather than placeholder text.
 
+## Site icon
+
+The tab and home-screen icon is the Service emblem.
+
+| File | Purpose |
+|---|---|
+| `app/favicon.ico` | Tab and bookmark icon, carrying 16, 32 and 48 px versions in one file |
+| `app/apple-icon.png` | 180 × 180 icon for iOS home screens and bookmarks |
+
+Both are generated from `public/images/fpis-logo.png`. That source scan still carries the certificate's security paper, so the artwork is separated from it by flood-filling inward from the image border — pale, low-saturation paper is made transparent, and because the fill only spreads from the outside, the white horses inside the laurel wreath are untouched. Emblem detail at 16 px is inevitably coarse; a tighter crop of the eagle and shield reads slightly better at that size, but it would need a second hand-made variant rather than a straight scale of the logo.
+
 ## Applicant flow
 
 Applicants register before starting an application. Registration continues directly to shipment details without requiring a sign-in. Applicants sign in later to search their dashboard by application number.

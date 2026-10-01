@@ -17,30 +17,41 @@
   object-fit: contain;
 }
 
+/* Footer social links: real brand marks on soft chips, each filling with its own
+   brand colour on hover. The brand colour arrives as a --brand custom property
+   set inline in app/layout.tsx, so a network's colour lives next to its icon. */
 .social-links {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 9px;
   margin-left: auto;
 }
 
 .social-links a {
-  width: 29px;
-  height: 29px;
+  width: 32px;
+  height: 32px;
   display: grid;
   place-items: center;
-  color: #52635a;
-  border: 1px solid #c2cdc5;
+  color: #4c5c54;
+  background: #fff;
+  border: 1px solid #d5ddd6;
   border-radius: 50%;
-  transition: color .18s ease, background .18s ease, border-color .18s ease;
+  text-decoration: none;
+  transition: color .18s ease, background .18s ease, border-color .18s ease, transform .18s ease, box-shadow .18s ease;
 }
 
 .social-links a:hover,
 .social-links a:focus-visible {
-  color: white;
-  background: var(--green);
-  border-color: var(--green);
-  outline: none;
+  color: #fff;
+  background: var(--brand, var(--green));
+  border-color: var(--brand, var(--green));
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px -6px rgba(23, 33, 29, .45);
+}
+
+.social-links a:focus-visible {
+  outline: 2px solid var(--green);
+  outline-offset: 2px;
 }
 
 @media (max-width: 620px) {
