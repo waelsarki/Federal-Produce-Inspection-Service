@@ -110,6 +110,14 @@ The console at `/staff` is a single-panel workspace. The sidebar is the only nav
 
 Reach it from the footer ("Staff login") or from the Quick links menu under **More → Staff login**.
 
+### Recent activity
+
+Below the Overview counts, `components/admin/ActivityFeed.tsx` lists the six most recent applications newest-first, each with a colour-coded marker (issued, approved, awaiting approval, rejected), the application number, commodity and destination, the status verbatim, and its age. Ages are relative for the last seven days ("40 min ago", "2 days ago") and fall back to a date beyond that.
+
+**This is not an audit log.** Nothing in the project records who performed an action or when, so each row is derived from the application record itself: the marker comes from the free-text `status`, and the timestamp shown is the application's `submittedAt` — the only date the data actually carries. It answers "what is the current standing of my most recent work", not "who did what". The logic lives in `lib/activity.ts`; replacing it with genuinely recorded events needs the server-side work listed under Prototype limits.
+
+`components/admin/ActivityFeed.tsx` renders it.
+
 **Handle the seeded credential carefully.**
 
 - Only the SHA-256 hash of the password is stored in `lib/staff.ts`; the password itself is not in the repository or the server-rendered HTML. The hash does reach the client JavaScript bundle, so treat it as a published default, not a secret.
@@ -138,12 +146,21 @@ Both panels only render for a signed-in account whose role grants `roles.manage`
 
 **What this does not do:** the workflow is configuration only. No application is actually advanced, approved or rejected against these levels yet — that remains listed under Prototype limits.
 
+## Responsive behaviour
+
+`app/quicklinks.css` was written for the password field and the super-admin configuration panels, but nothing imported it, so those components rendered unstyled — the show/hide toggle fell back to browser defaults, and the roles, approval-level and certificate-template panels lost their card, border and button styling. The app shell now imports it, immediately after `globals.css` and before the `*-overrides.css` files so the overrides still win.
+
+Control sizing follows the pointer, not the width alone. The console's sidebar links (34px) and admin buttons (31px) suit a mouse, so a `(hover: none), (pointer: coarse), (max-width: 820px)` block grows them to 44px on touch. Width is included in that query deliberately: a narrow desktop window is mouse-driven, and some touch laptops still report a fine pointer. Desktop layout is unchanged.
+
+Verified with a headless sweep of all four routes (`/staff`, `/staff/login`, `/certificate/<ref>`, `/verify`) at 320, 390, 620, 700, 768, 1024, 1051 and 1440px, including the 620/700/1050 breakpoint edges, checking for horizontal overflow, clipped text, undersized tap targets and console errors. The certificate sheet is scaled to the viewport, so it stays within 320px.
+
 ## Prototype limits
 
 - This front-end prototype stores one applicant profile and application records in the current browser's local storage. It is not production authentication or durable storage.
 - Staff sign-in has the same limits: seeded accounts are local to one browser, the session is a sessionStorage flag that is trivially forged, and role checks happen in the browser rather than on a server.
 - Payment checkout and evidence review, creating and editing staff accounts, executing approval decisions against the configured levels, official certificate issuance (the certificate sheet is a specimen generated in the browser), and secure barcode verification are not connected.
 - Generated references are preview identifiers, not official FPIS application or certificate numbers. The certificate number, register reference and station code on the specimen are derived from the application for display only.
+- The Overview's Recent activity feed is derived from application records, not an event log. It shows each application's current status and its submission date; it cannot show who approved or issued anything, or when that happened. A real activity trail needs server-side event recording.
 - Do not enter real personal, financial, or shipment data into this prototype.
 
 Production requires a trusted server-side backend, persistent database, secure identity/session management, payment-provider verification, protected document storage, auditable role-based approval, and signed certificate verification.

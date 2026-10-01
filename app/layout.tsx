@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import "./quicklinks.css";
 import "./hero-overrides.css";
 import "./certificate.css";
 import "./certificate-modern.css";

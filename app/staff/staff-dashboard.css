@@ -8,7 +8,9 @@
 /* Full-width, fixed-height controls: the active state changes colour and an
    inset rule only, so switching sections never shifts the sidebar. */
 .sidebar-link { width: 100%; min-height: 34px; display: flex; align-items: center; gap: 10px; padding: 8px 11px; color: #b7cec0; background: transparent; border: 0; border-radius: 3px; font-size: 10px; font-weight: 600; text-align: left; cursor: pointer; transition: color .18s ease, background .18s ease; }
-.sidebar-link span { flex: 0 0 18px; color: #7fa48d; font-family: "Courier New", monospace; font-size: 8px; }
+/* Icons sit in a fixed slot so every row aligns and the label never shifts. */
+.sidebar-icon { flex: 0 0 16px; width: 16px; height: 16px; color: #8fb39c; stroke-width: 1.75; transition: color .18s ease; }
+.sidebar-link:hover .sidebar-icon, .sidebar-link.is-active .sidebar-icon { color: #d4b66f; }
 .sidebar-link:hover, .sidebar-link.is-active { color: #fff; background: #ffffff14; }
 .sidebar-link.is-active { box-shadow: inset 2px 0 #d4b66f; }
 .sidebar-account { display: flex; align-items: center; gap: 9px; margin-top: auto; padding: 16px 6px 0; border-top: 1px solid #ffffff20; }
@@ -49,10 +51,27 @@
 .review-number span, .review-card strong { color: var(--green); font-size: 11px; font-weight: 800; }
 .review-card small { overflow: hidden; color: var(--muted); text-overflow: ellipsis; white-space: nowrap; font-size: 9px; }
 .review-actions { display: flex; gap: 7px; }
+/* .admin-button and .password-toggle come from app/quicklinks.css. */
+.admin-button:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+.admin-button:disabled { opacity: .55; cursor: not-allowed; }
 .admin-button-primary { color: #fff !important; background: var(--green) !important; border-color: var(--green) !important; }
 .staff-empty { padding: 28px 12px; border: 0; box-shadow: none; }
 .generated-panel { background: #eef5ef; border-color: #cadbce; }
 .generated-actions { display: flex; gap: 9px; margin-top: 18px; }
+.activity-panel { margin-top: 22px; }
+.activity-list { margin: 0; padding: 0; list-style: none; border-top: 1px solid #edf1ed; }
+.activity-row { display: grid; grid-template-columns: 30px minmax(0, 1fr) auto auto; align-items: center; gap: 14px; padding: 13px 0; border-bottom: 1px solid #edf1ed; }
+.activity-glyph { width: 26px; height: 26px; display: grid; place-items: center; border-radius: 50%; font-size: 12px; font-weight: 700; }
+.activity-issued .activity-glyph, .activity-approved .activity-glyph { color: #17543f; background: #e2ede6; }
+.activity-awaiting .activity-glyph { color: #805d20; background: #f4f0df; }
+.activity-rejected .activity-glyph { color: #9c4537; background: #f6e7e4; }
+.activity-body { display: grid; gap: 3px; min-width: 0; }
+.activity-body strong { font-family: Manrope, sans-serif; font-size: 12.5px; }
+.activity-ref { color: var(--green); font-family: "Courier New", monospace; font-size: 10px; font-weight: 700; }
+.activity-body small { overflow: hidden; color: var(--muted); text-overflow: ellipsis; white-space: nowrap; font-size: 10px; }
+.activity-meta { display: grid; justify-items: end; gap: 5px; }
+.activity-meta time { color: var(--muted); font-size: 9px; }
+.activity-open { white-space: nowrap; }
 .settings-form { display: grid; gap: 13px; max-width: 520px; }
 .settings-form .button { justify-self: start; margin-top: 5px; }
 .staff-workspace .admin-panel { margin-top: 22px; }
@@ -61,5 +80,19 @@
 .template-field-row > input { width: 100%; height: 36px; padding: 0 10px; border: 1px solid #d7dfd8; border-radius: 2px; font-size: 11px; }
 .template-field-row .permission-row { padding: 0; }
 .admin-panel-actions { display: flex; justify-content: flex-end; gap: 9px; margin-top: 18px; }
+/* Touch targets. The compact sizing above suits a mouse, but 31-34px controls
+   are hard to hit on glass: WCAG 2.5.8 asks for 24px minimum and platform
+   guidance (iOS HIG, Material) for ~44px. Applied on coarse pointers, and by
+   width as well, because a narrow desktop window is also mouse-driven and some
+   touch laptops still report a fine pointer. Desktop layout is unchanged. */
+@media (hover: none), (pointer: coarse), (max-width: 820px) {
+  .sidebar-link { min-height: 44px; font-size: 11px; }
+  .sidebar-icon { flex-basis: 17px; width: 17px; height: 17px; }
+  .admin-button { min-height: 44px; padding: 0 16px; font-size: 11.5px; }
+  .button-small { min-height: 44px; padding: 0 18px; font-size: 12px; }
+  .sidebar-account button { display: grid; place-items: center; min-width: 44px; min-height: 44px; margin: -11px -6px; }
+  .password-toggle { width: 44px; height: 44px; right: 0; }
+  .password-field input { padding-right: 52px; }
+}
 @media (max-width: 1050px) { .staff-workspace { grid-template-columns: 205px minmax(0, 1fr); } .analytics-grid { grid-template-columns: repeat(2, 1fr); } .review-card { grid-template-columns: 1fr 1fr; } .review-actions { justify-content: flex-start; } }
-@media (max-width: 700px) { .staff-workspace { display: block; } .staff-sidebar { position: static; min-height: 0; max-height: none; overflow: visible; padding: 20px 16px 15px; } .sidebar-heading { padding-bottom: 17px; } .sidebar-heading h1 { font-size: 23px; } .sidebar-nav { grid-template-columns: repeat(2, 1fr); gap: 3px; padding: 14px 0; } .sidebar-account { margin-top: 0; } .staff-main { padding: 28px 5% 54px; } .staff-main-header { align-items: flex-start; flex-direction: column; } .staff-date { align-self: flex-start; } .analytics-grid { grid-template-columns: 1fr; } .review-card { grid-template-columns: 1fr; gap: 9px; } .review-actions { flex-wrap: wrap; } .template-field-row { grid-template-columns: 1fr; gap: 7px; } }
+@media (max-width: 700px) { .staff-workspace { display: block; } .staff-sidebar { position: static; min-height: 0; max-height: none; overflow: visible; padding: 20px 16px 15px; } .sidebar-heading { padding-bottom: 17px; } .sidebar-heading h1 { font-size: 23px; } .sidebar-nav { grid-template-columns: repeat(2, 1fr); gap: 3px; padding: 14px 0; } .sidebar-account { margin-top: 0; } .staff-main { padding: 28px 5% 54px; } .staff-main-header { align-items: flex-start; flex-direction: column; } .staff-date { align-self: flex-start; } .analytics-grid { grid-template-columns: 1fr; } .review-card { grid-template-columns: 1fr; gap: 9px; } .review-actions { flex-wrap: wrap; } .template-field-row { grid-template-columns: 1fr; gap: 7px; } .activity-row { grid-template-columns: 26px minmax(0, 1fr); gap: 10px; } .activity-meta { grid-column: 2; justify-items: start; } .activity-open { grid-column: 2; justify-self: start; } }

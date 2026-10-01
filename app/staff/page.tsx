@@ -1,32 +1,44 @@
 "use client";
 
 import Link from "next/link";
-import { FormEvent, useEffect, useState } from "react";
+import { FormEvent, useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { APPLICATIONS_KEY, ExportApplication } from "@/lib/portal";
 import { StaffAccount, StaffPermission, can, changeStaffPassword, readRoles, readStaffSession, roleLabel, signOutStaff, updateStaffProfile } from "@/lib/staff";
 import PasswordField from "@/components/PasswordField";
 import RoleManager from "@/components/admin/RoleManager";
 import ApprovalLevelManager from "@/components/admin/ApprovalLevelManager";
+import ActivityFeed from "@/components/admin/ActivityFeed";
 import CertificateTemplateManager from "@/components/admin/CertificateTemplateManager";
+import {
+  Award,
+  ClipboardList,
+  FileCog,
+  KeyRound,
+  LayoutDashboard,
+  UserCog,
+  Users,
+  Workflow,
+  type LucideIcon,
+} from "lucide-react";
 
 type StaffPanel = "overview" | "applications" | "generated" | "certificate-template" | "workflow" | "roles" | "profile" | "password";
 
 /**
  * The sidebar is the only navigation in this workspace, so each entry maps to
  * exactly one section of the main area and the main area shows that section
- * alone. Entries the signed-in account may not use are dropped, and the step
- * numbers are derived from what is actually rendered so they stay sequential.
+ * alone. Entries the signed-in account may not use are dropped, and the icons
+ * are picked per section so the rail can be scanned without reading the labels.
  */
-const STAFF_PANELS: { id: StaffPanel; label: string; permission?: StaffPermission }[] = [
-  { id: "overview", label: "Overview" },
-  { id: "applications", label: "Review applications" },
-  { id: "generated", label: "Generate certificates" },
-  { id: "certificate-template", label: "Configure certificate", permission: "certificates.issue" },
-  { id: "workflow", label: "Approval workflow", permission: "workflow.manage" },
-  { id: "roles", label: "Create user roles", permission: "roles.manage" },
-  { id: "profile", label: "Admin profile" },
-  { id: "password", label: "Change password" },
+const STAFF_PANELS: { id: StaffPanel; label: string; icon: LucideIcon; permission?: StaffPermission }[] = [
+  { id: "overview", label: "Overview", icon: LayoutDashboard },
+  { id: "applications", label: "Review applications", icon: ClipboardList },
+  { id: "generated", label: "Generate certificates", icon: Award },
+  { id: "certificate-template", label: "Configure certificate", icon: FileCog, permission: "certificates.issue" },
+  { id: "workflow", label: "Approval workflow", icon: Workflow, permission: "workflow.manage" },
+  { id: "roles", label: "Create user roles", icon: Users, permission: "roles.manage" },
+  { id: "profile", label: "Admin profile", icon: UserCog },
+  { id: "password", label: "Change password", icon: KeyRound },
 ];
 
 export default function StaffPage() {
@@ -73,6 +85,11 @@ export default function StaffPage() {
     }
   }
 
+  // A single timestamp for the whole render, so every "x min ago" in the feed
+  // agrees with the others instead of drifting between renders. Declared above
+  // the early return below so hooks always run in the same order.
+  const now = useMemo(() => Date.now(), [applications]);
+
   if (!account) return <div className="page-loading" aria-label="Loading console" />;
 
   const pending = applications.filter((application) => !/issued|approved/i.test(application.status)).length;
@@ -92,17 +109,21 @@ export default function StaffPage() {
         <aside className="staff-sidebar" aria-label="Staff console navigation">
           <div className="sidebar-heading"><span className="sidebar-kicker">FPIS / CONTROL ROOM</span><h1>Admin<br /><em>workspace.</em></h1></div>
           <nav className="sidebar-nav">
-            {availablePanels.map((panel, index) => (
-              <button
-                key={panel.id}
-                className={`sidebar-link ${current === panel.id ? "is-active" : ""}`}
-                type="button"
-                onClick={() => setActivePanel(panel.id)}
-                aria-current={current === panel.id ? "page" : undefined}
-              >
-                <span>{String(index + 1).padStart(2, "0")}</span>{panel.label}
-              </button>
-            ))}
+            {availablePanels.map((panel) => {
+              const Icon = panel.icon;
+              return (
+                <button
+                  key={panel.id}
+                  className={`sidebar-link ${current === panel.id ? "is-active" : ""}`}
+                  type="button"
+                  onClick={() => setActivePanel(panel.id)}
+                  aria-current={current === panel.id ? "page" : undefined}
+                >
+                  <Icon className="sidebar-icon" size={16} strokeWidth={1.75} aria-hidden="true" />
+                  {panel.label}
+                </button>
+              );
+            })}
           </nav>
           <div className="sidebar-account"><span className="sidebar-avatar">{account.fullName.slice(0, 1).toUpperCase()}</span><div><strong>{account.fullName}</strong><small>{roleLabel(account.roleId)}</small></div><form onSubmit={handleSignOut}><button type="submit" aria-label="Sign out" title="Sign out">↗</button></form></div>
         </aside>
@@ -117,6 +138,8 @@ export default function StaffPage() {
                 <article className="analytics-card"><span>CERTIFICATES ISSUED</span><strong>{String(issued).padStart(2, "0")}</strong><small>Approved records</small><i>✓</i></article>
                 <article className="analytics-card"><span>ACTIVE ROLES</span><strong>{String(roles.length).padStart(2, "0")}</strong><small>Configured access profiles</small><i>◎</i></article>
               </section>
+
+              <ActivityFeed applications={applications} now={now} onOpenQueue={() => setActivePanel("applications")} />
             </>
           ) : null}
 
