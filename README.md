@@ -97,12 +97,14 @@ The sheet is laid out to match the Service's printed certificate:
 
 ## Staff access
 
-A separate staff portal exists alongside the applicant flow.
+A staff portal is the only signed-in surface in this project.
 
 | Route | Purpose |
 |---|---|
 | `/staff/login` | Staff sign-in |
-| `/staff` | Super admin console (guarded, redirects to sign-in without a session) |
+| `/staff` | Admin console (guarded, redirects to sign-in without a session) |
+
+The console at `/staff` is a single-panel workspace. The sidebar is the only navigation: each control swaps the main area to exactly one section, and Overview is what opens by default. Sections are Overview, Review applications, Generate certificates, Configure certificate, Approval workflow, Create user roles, Admin profile and Change password; the last three configuration sections appear only when the signed-in role grants the matching permission, and the sidebar numbers itself from what it actually renders. The sidebar fills the full column and viewport height and stays put while the main area scrolls, and every control is a full-width button of identical height, so switching sections never shifts the layout.
 
 `lib/staff.ts` seeds one **super admin** account (`waelsarki@gmail.com`) into browser storage on first use. Seeding is idempotent — an existing account with that email is never overwritten, so a rotated password survives a reload.
 

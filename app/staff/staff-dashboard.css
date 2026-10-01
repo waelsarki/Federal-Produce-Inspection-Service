@@ -1,12 +1,14 @@
-.staff-workspace { display: grid; grid-template-columns: 238px minmax(0, 1fr); min-height: calc(100vh - 78px); background: #f3f6f2; }
-.staff-sidebar { display: flex; flex-direction: column; padding: 31px 20px 20px; color: #d8e7dc; background: #103c2e; }
+.staff-workspace { display: grid; grid-template-columns: 248px minmax(0, 1fr); align-items: stretch; min-height: calc(100vh - 78px); background: #f3f6f2; }
+.staff-sidebar { position: sticky; top: 0; display: flex; flex-direction: column; min-height: calc(100vh - 78px); max-height: calc(100vh - 78px); overflow-y: auto; padding: 31px 20px 20px; color: #d8e7dc; background: #103c2e; }
 .sidebar-heading { padding: 0 11px 28px; border-bottom: 1px solid #ffffff20; }
 .sidebar-kicker { color: #d4b66f; font-size: 8px; font-weight: 800; letter-spacing: 1.1px; }
 .sidebar-heading h1 { margin: 14px 0 0; color: #fff; font-family: Manrope, sans-serif; font-size: 28px; line-height: 1.05; }
 .sidebar-heading h1 em { color: #d4b66f; font-style: normal; }
 .sidebar-nav { display: grid; gap: 4px; padding: 23px 0; }
-.sidebar-link { display: flex; align-items: center; gap: 10px; padding: 10px 11px; color: #b7cec0; border-radius: 3px; font-size: 10px; font-weight: 600; transition: color .18s ease, background .18s ease; }
-.sidebar-link span { width: 18px; color: #7fa48d; font-family: "Courier New", monospace; font-size: 8px; }
+/* Full-width, fixed-height controls: the active state changes colour and an
+   inset rule only, so switching sections never shifts the sidebar. */
+.sidebar-link { width: 100%; min-height: 34px; display: flex; align-items: center; gap: 10px; padding: 8px 11px; color: #b7cec0; background: transparent; border: 0; border-radius: 3px; font-size: 10px; font-weight: 600; text-align: left; cursor: pointer; transition: color .18s ease, background .18s ease; }
+.sidebar-link span { flex: 0 0 18px; color: #7fa48d; font-family: "Courier New", monospace; font-size: 8px; }
 .sidebar-link:hover, .sidebar-link.is-active { color: #fff; background: #ffffff14; }
 .sidebar-link.is-active { box-shadow: inset 2px 0 #d4b66f; }
 .sidebar-account { display: flex; align-items: center; gap: 9px; margin-top: auto; padding: 16px 6px 0; border-top: 1px solid #ffffff20; }
@@ -34,6 +36,8 @@
 .analytics-card-primary small { color: #c3d9ca; }
 .analytics-card i { position: absolute; right: 17px; bottom: 17px; color: #b89550; font-size: 17px; font-style: normal; }
 .staff-panel { margin-top: 22px; padding: 22px; background: #fff; border: 1px solid #dce5de; border-radius: 4px; }
+/* A section is the only thing in the main area, so it sits flush at the top. */
+.staff-panel-flush { margin-top: 0; }
 .staff-panel-head { display: flex; align-items: center; justify-content: space-between; gap: 18px; margin-bottom: 19px; }
 .staff-panel-head h3 { margin: 0; font-family: Manrope, sans-serif; font-size: 17px; }
 .staff-panel-head .eyebrow { margin-bottom: 7px; }
@@ -48,8 +52,8 @@
 .admin-button-primary { color: #fff !important; background: var(--green) !important; border-color: var(--green) !important; }
 .staff-empty { padding: 28px 12px; border: 0; box-shadow: none; }
 .generated-panel { background: #eef5ef; border-color: #cadbce; }
-.settings-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; margin-top: 22px; }
-.settings-form { display: grid; gap: 13px; }
+.generated-actions { display: flex; gap: 9px; margin-top: 18px; }
+.settings-form { display: grid; gap: 13px; max-width: 520px; }
 .settings-form .button { justify-self: start; margin-top: 5px; }
 .staff-workspace .admin-panel { margin-top: 22px; }
 .template-field-list { display: grid; gap: 4px; }
@@ -58,4 +62,4 @@
 .template-field-row .permission-row { padding: 0; }
 .admin-panel-actions { display: flex; justify-content: flex-end; gap: 9px; margin-top: 18px; }
 @media (max-width: 1050px) { .staff-workspace { grid-template-columns: 205px minmax(0, 1fr); } .analytics-grid { grid-template-columns: repeat(2, 1fr); } .review-card { grid-template-columns: 1fr 1fr; } .review-actions { justify-content: flex-start; } }
-@media (max-width: 700px) { .staff-workspace { display: block; } .staff-sidebar { padding: 20px 16px 15px; } .sidebar-heading { padding-bottom: 17px; } .sidebar-heading h1 { font-size: 23px; } .sidebar-nav { grid-template-columns: repeat(2, 1fr); gap: 3px; padding: 14px 0; } .sidebar-account { margin-top: 0; } .staff-main { padding: 28px 5% 54px; } .staff-main-header { align-items: flex-start; flex-direction: column; } .staff-date { align-self: flex-start; } .analytics-grid, .settings-grid { grid-template-columns: 1fr; } .review-card { grid-template-columns: 1fr; gap: 9px; } .review-actions { flex-wrap: wrap; } .template-field-row { grid-template-columns: 1fr; gap: 7px; } }
+@media (max-width: 700px) { .staff-workspace { display: block; } .staff-sidebar { position: static; min-height: 0; max-height: none; overflow: visible; padding: 20px 16px 15px; } .sidebar-heading { padding-bottom: 17px; } .sidebar-heading h1 { font-size: 23px; } .sidebar-nav { grid-template-columns: repeat(2, 1fr); gap: 3px; padding: 14px 0; } .sidebar-account { margin-top: 0; } .staff-main { padding: 28px 5% 54px; } .staff-main-header { align-items: flex-start; flex-direction: column; } .staff-date { align-self: flex-start; } .analytics-grid { grid-template-columns: 1fr; } .review-card { grid-template-columns: 1fr; gap: 9px; } .review-actions { flex-wrap: wrap; } .template-field-row { grid-template-columns: 1fr; gap: 7px; } }

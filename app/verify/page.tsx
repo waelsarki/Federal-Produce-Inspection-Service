@@ -36,7 +36,7 @@ export default function VerifyPage() {
             <div className="empty-state" style={{ marginTop: 18 }}>
               <span className="empty-symbol">—</span>
               <h2>No matching record</h2>
-              <p>No application in this browser matches that reference. Check the reference, or sign in to your dashboard to see the applications you submitted.</p>
+              <p>No application in this browser matches that reference. Check the reference, or sign in to the staff console to review the applications in this browser.</p>
               <Link className="text-link" href="/staff/login">Open staff portal →</Link>
             </div>
           ) : null}
