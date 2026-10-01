@@ -167,3 +167,17 @@
 .quicklinks-top h1{font-size:33px}
 .quicklink-group{padding:19px 16px}
 }
+
+/* Sign-ins listed under each role, and the optional credentials on the create form. */
+.role-holders { margin-top: 13px; padding-top: 12px; border-top: 1px dashed var(--line); }
+.role-holders-label { color: var(--green); font-size: 9px; font-weight: 800; letter-spacing: .8px; text-transform: uppercase; }
+.role-holders-empty { margin: 7px 0 0; color: var(--muted); font-size: 10.5px; }
+.role-holders ul { margin: 8px 0 0; padding: 0; list-style: none; display: grid; gap: 7px; }
+.role-holders li { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 8px 10px; background: #f7faf7; border: 1px solid #e1e9e2; border-radius: 2px; }
+.role-holders li span { display: grid; gap: 2px; min-width: 0; }
+.role-holders li strong { font-size: 11px; }
+.role-holders li small { color: var(--muted); font-size: 9.5px; word-break: break-all; }
+.role-credentials { margin: 16px 0 0; padding: 13px 14px 15px; background: #f7faf7; border: 1px solid #e1e9e2; border-radius: 2px; }
+.role-credentials legend { padding: 0 5px; color: var(--green); font-size: 9.5px; font-weight: 800; letter-spacing: .7px; text-transform: uppercase; }
+.role-credentials .field-grid { margin-top: 10px; }
+.role-credentials .password-field { margin-top: 11px; }

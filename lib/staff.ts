@@ -313,3 +313,55 @@ export function updateStaffProfile(accountId: string, fullName: string, email: s
   writeJson(STAFF_KEY, accounts.map((account) => account.id === accountId ? { ...account, fullName: fullName.trim(), email: normalizedEmail } : account));
   return null;
 }
+/** Shared minimum, so account creation and password changes agree. */
+export const MIN_PASSWORD_LENGTH = 12;
+
+const EMAIL_PATTERN = /^\S+@\S+\.\S+$/;
+
+/**
+ * Every staff account in this browser, including the seeded super admin.
+ * Password hashes are in local storage either way; the UI never renders them.
+ */
+export function readStaffAccounts(): StaffAccount[] {
+  return seedSuperAdmin();
+}
+
+/**
+ * Creates a sign-in account for a role. The password is hashed with SHA-256 and
+ * never stored or returned in the clear.
+ */
+export async function createStaffAccount(
+  fullName: string,
+  email: string,
+  roleId: string,
+  password: string,
+): Promise<string | null> {
+  const accounts = seedSuperAdmin();
+  const normalizedEmail = email.trim().toLowerCase();
+  if (!fullName.trim()) return "Enter the name of the person who will sign in.";
+  if (!EMAIL_PATTERN.test(normalizedEmail)) return "Enter a valid email address for the sign-in.";
+  if (password.length < MIN_PASSWORD_LENGTH) return `Choose a password of at least ${MIN_PASSWORD_LENGTH} characters.`;
+  if (accounts.some((entry) => entry.email === normalizedEmail)) return "A staff account already uses that email address.";
+  if (!readRoles().some((role) => role.id === roleId)) return "That role no longer exists. Create it again and retry.";
+
+  const account: StaffAccount = {
+    id: `staff-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 7)}`,
+    email: normalizedEmail,
+    fullName: fullName.trim(),
+    roleId,
+    passwordHash: await hashPassword(password),
+    createdAt: new Date().toISOString(),
+  };
+  writeJson(STAFF_KEY, [...accounts, account]);
+  return null;
+}
+
+/** Removes an account. The seeded super admin cannot be removed. */
+export function deleteStaffAccount(accountId: string): string | null {
+  const accounts = seedSuperAdmin();
+  const account = accounts.find((entry) => entry.id === accountId);
+  if (!account) return "Account not found.";
+  if (account.roleId === SUPERADMIN_ROLE_ID) return "The super admin account cannot be removed.";
+  writeJson(STAFF_KEY, accounts.filter((entry) => entry.id !== accountId));
+  return null;
+}

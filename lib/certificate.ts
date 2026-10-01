@@ -1,4 +1,4 @@
-import type { ApplicantProfile, ExportApplication } from "./portal";
+﻿import type { ApplicantProfile, ExportApplication } from "./portal";
 import { certificateFieldEnabled, certificateFieldLabel, CertificateFieldConfig } from "./certificate-config";
 
 export const CERTIFICATE_FUMIGATION_NOTE = "Fumigation should be repeated after expiration of 21 days";
@@ -154,7 +154,11 @@ export function formatWeightAsMts(value: string): string {
 }
 
 
-export function buildCertificate(application: ExportApplication, applicant: ApplicantProfile | null, issuedAt: Date): CertificateDocument {
+export function buildCertificate(
+  application: ExportApplication,
+  exporter: { organization?: string; address?: string } | null,
+  issuedAt: Date,
+): CertificateDocument {
   const seed = fnv1a(application.applicationNumber);
   const portOfLoading = application.portOfLoading?.trim() ?? "";
   const fallback = splitVesselVoyage(application.vesselAndVoyage ?? "");
@@ -168,7 +172,7 @@ export function buildCertificate(application: ExportApplication, applicant: Appl
     reference: `FP//${stationCodeFor(portOfLoading)}/VOL..${toRoman(seed % ROMAN_VOLUMES.length)}/${1000 + (fnv1a(application.applicationNumber, seed ^ 0x9e3779b9) % 9000)}`,
     issueDate: issuedAt,
     qualityAnalysis: grade.toUpperCase(),
-    exporterLines: addressLines(applicant?.organization ?? "", applicant?.address ?? ""),
+    exporterLines: addressLines(exporter?.organization ?? "", exporter?.address ?? ""),
     consigneeLines: addressLines(application.consigneeName ?? "", application.consigneeAddress ?? ""),
     commodityLines: commodityLines(description, application.hsCode ?? ""),
     fumigationDate: formatDayMonthYear(application.fumigationDate ?? ""),

@@ -93,6 +93,17 @@ The sheet is laid out to match the Service's printed certificate:
 
 **Printing.** "Print or save as PDF" prints the sheet on its own at A4 with the security paper intact; on screen the sheet scales down to fit narrow windows.
 
+**Completing the fields before printing** (`components/admin/CertificateFieldsForm.tsx`, `lib/certificate-fields.ts`)
+
+The applicant cannot know what the Service measured, so the certificate page carries an editor above the sheet for the values only an inspector has: fumigation date and fumigant, standard pack, gross and net weight, grade, moisture, packaging condition and the export and logistics details.
+
+- Every input is **pre-filled** from the application and the applicant profile, so an officer is correcting and completing rather than retyping. The exporter name and address fall back to the applicant's own organisation and address when the application does not carry them.
+- Saving writes to a separate `certificateData` override on the application. The applicant's original submission is **never overwritten**, and a blank override does not erase a submitted value.
+- The header counts the required fields still blank. A field that is **disabled in the certificate template is not offered and is not counted**, so an officer is never asked for something the sheet will not print.
+- The issue date is fixed on first save and reused afterwards, so re-opening or re-printing a certificate cannot silently change the date on a document that has already been issued.
+- The sheet below re-renders immediately from the resolved values — kilogram weights still print as MTS to three decimals.
+- A role without `certificates.issue` sees the same values read-only, with no save button.
+
 **This is a specimen, not an issuance.** The sheet carries a printed line saying so, and the prototype notice above it repeats it. Nothing is signed, registered, numbered from an official register or digitally verifiable — `/verify` still returns application records only.
 
 ## Staff access
@@ -132,6 +143,10 @@ The super admin console can configure roles and the approval workflow. Both are 
 
 - Each role has a name, description and a set of permissions.
 - Create roles from the console; new roles start with `applications.view` only, so grant permissions deliberately.
+- Role creation optionally collects a **sign-in** in the same form: staff name, email and an initial password. Leaving those three blank creates the role only, so a role can be defined before the person is known.
+- The initial password is hashed with SHA-256 in the browser before it is stored and is never written anywhere in plain text. It must be at least 12 characters; an email already used by another account is refused.
+- If the account cannot be created, the **role is kept** and the failure is reported — a role an admin has just configured is never silently discarded.
+- Each role lists the sign-ins that use it, and any of them except the seeded super admin can be removed without deleting the role.
 - Permissions come from a fixed catalogue in `lib/staff.ts` (`STAFF_PERMISSIONS`): view, review, decide approvals, issue certificates, manage staff and roles, and configure the workflow. The catalogue is fixed because arbitrary permission strings would need a server to evaluate.
 - Super Admin is a system role: its permissions are locked and it cannot be deleted.
 - A role is refused deletion while an account is assigned to it or an approval level still points at it, so configuration never breaks a reference.
