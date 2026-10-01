@@ -11,6 +11,7 @@ import ApprovalLevelManager from "@/components/admin/ApprovalLevelManager";
 import ActivityFeed from "@/components/admin/ActivityFeed";
 import ApprovalPanel from "@/components/admin/ApprovalPanel";
 import CertificateTemplateManager from "@/components/admin/CertificateTemplateManager";
+import CertificateGenerator from "@/components/admin/CertificateGenerator";
 import {
   Award,
   ClipboardList,
@@ -185,10 +186,7 @@ export default function StaffPage() {
           ) : null}
 
           {current === "generated" ? (
-            <section className="staff-panel generated-panel staff-panel-flush">
-              <div className="staff-panel-head"><div><p className="eyebrow">CERTIFICATE PRODUCTION</p><h3>Generate and print</h3></div></div><p className="panel-description">Open a reviewed application to generate its configured FPIS certificate. Use the print control on the document page to print or save it as PDF.</p>
-              <div className="generated-actions"><button className="admin-button" type="button" onClick={() => setActivePanel("applications")}>Open the work queue</button></div>
-            </section>
+            <CertificateGenerator applications={applications} canIssue={can(account, "certificates.issue")} />
           ) : null}
 
           {current === "certificate-template" && can(account, "certificates.issue") ? <CertificateTemplateManager /> : null}

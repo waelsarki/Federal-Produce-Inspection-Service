@@ -391,6 +391,8 @@
 .cert-field input:disabled, .cert-field textarea:disabled { background: #f4f6f3; color: #7c8880; }
 .cert-field-required { color: var(--red); }
 .cert-field-hint { color: #a4613f; font-size: 9px; }
+/* Caption naming a printable field that is captured by more than one value. */
+.cert-field-group { display: block; margin: -2px 0 4px; color: var(--muted); font-size: 9px; letter-spacing: .04em; }
 .cert-field.is-blank input, .cert-field.is-blank textarea { border-color: #ddb9b2; }
 .cert-fields-actions { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; padding-top: 15px; border-top: 1px solid var(--line); }
 .cert-fields-note { margin: 12px 0 0; color: var(--muted); font-size: 9.5px; line-height: 1.6; }

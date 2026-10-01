@@ -104,6 +104,14 @@ The applicant cannot know what the Service measured, so the certificate page car
 - The sheet below re-renders immediately from the resolved values — kilogram weights still print as MTS to three decimals.
 - A role without `certificates.issue` sees the same values read-only, with no save button.
 
+**The template is the single source of what a certificate needs.** `CERTIFICATE_FIELD_INPUTS` in `lib/certificate-fields.ts` is the only place that says which values each printable field is captured by. `configuredCertificateInputs()` resolves that catalogue against the template stored under "Configure certificate", and **both the generator and this form read it** rather than keeping their own list. Three consequences, all verified end to end:
+
+- Switching a field off in the template removes its input from the form, removes it from the outstanding count, and drops it from the generator's totals.
+- Renaming a field renames its input. A printable field captured by a single value takes the template's label directly; one captured by several values (the exporter needs a name and an address) keeps the template's label as a caption above its per-value labels.
+- Fields the Service derives rather than collects — the quality analysis repeats the grade, and the circulation list, signature block and barcode are fixed — are not asked for, because no input maps to them.
+
+Adding a new printable field means adding one row to the catalogue and one entry to `DEFAULT_CERTIFICATE_FIELDS`; neither the generator nor the form needs changing.
+
 **This is a specimen, not an issuance.** The sheet carries a printed line saying so, and the prototype notice above it repeats it. Nothing is signed, registered, numbered from an official register or digitally verifiable — `/verify` still returns application records only.
 
 ## Staff access
@@ -118,6 +126,10 @@ A staff portal is the only signed-in surface in this project.
 The console at `/staff` is a single-panel workspace. The sidebar is the only navigation: each control swaps the main area to exactly one section, and Overview is what opens by default. Sections are Overview, Review applications, Generate certificates, Configure certificate, Approval workflow, Create user roles, Admin profile and Change password; the last three configuration sections appear only when the signed-in role grants the matching permission, and the sidebar numbers itself from what it actually renders. The sidebar fills the full column and viewport height and stays put while the main area scrolls, and every control is a full-width button of identical height, so switching sections never shifts the layout.
 
 `lib/staff.ts` seeds one **super admin** account (`waelsarki@gmail.com`) into browser storage on first use. Seeding is idempotent — an existing account with that email is never overwritten, so a rotated password survives a reload.
+
+**Generate certificates** (`components/admin/CertificateGenerator.tsx`) is the production surface: one row per application, showing how much of the printed sheet is already filled, how many required fields are outstanding, and whether it has been issued. Applications that still need work sort first, so the queue reads as a to-do list rather than a database dump. Search covers reference, commodity, consignee and destination, and All / Needs fields / Ready narrow the list. "Generate certificate" opens that reference in the generator described under [Certificate specimen](#certificate-specimen), where the fields are completed and the sheet is printed.
+
+The counts on this panel come from the same resolved template as the form, so the two can never disagree about what a certificate needs. A role without `certificates.issue` sees the same list with a read-only *View certificate* link instead.
 
 Reach it from the footer ("Staff login") or from the Quick links menu under **More → Staff login**.
 
