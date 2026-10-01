@@ -36,6 +36,66 @@ export type ExportApplication = {
   billOfLadingNumber?: string;
   billOfLadingDate?: string;
   portOfLoading?: string;
+  /**
+   * Append-only approval decisions, newest last. Optional because applications
+   * seeded before the approval engine existed have none; those fall back to
+   * their free-text status. See lib/approvals.ts.
+   */
+  approvals?: ApprovalDecision[];
+  /**
+   * Certificate values completed or corrected by staff at issuance. Kept apart
+   * from the applicant's own submission so both remain readable. See
+   * lib/certificate-fields.ts.
+   */
+  certificateData?: CertificateData;
+};
+
+/** Staff-editable certificate fields, plus the fixed issue date. */
+export type CertificateData = {
+  exporterOrganization?: string;
+  exporterAddress?: string;
+  consigneeName?: string;
+  consigneeAddress?: string;
+  goodsDescription?: string;
+  hsCode?: string;
+  fumigationDate?: string;
+  fumigant?: string;
+  standardPack?: string;
+  grossWeight?: string;
+  netWeight?: string;
+  shipmentDate?: string;
+  grade?: string;
+  packagingCondition?: string;
+  nxpNumber?: string;
+  estimatedValue?: string;
+  moistureContent?: string;
+  vessel?: string;
+  voyage?: string;
+  destination?: string;
+  billOfLadingNumber?: string;
+  billOfLadingDate?: string;
+  portOfLoading?: string;
+  /** ISO date the certificate was issued, fixed on first save. */
+  issuedAt?: string;
+  issuedBy?: string;
+};
+
+/**
+ * One person's decision at one approval level. Level label, order and the
+ * staff member's name and role are snapshotted so the trail still reads
+ * correctly after the workflow or the account is renamed or deleted.
+ */
+export type ApprovalDecision = {
+  id: string;
+  levelId: string;
+  levelLabel: string;
+  levelOrder: number;
+  decision: "approved" | "rejected";
+  staffId: string;
+  staffName: string;
+  staffRoleId: string;
+  decidedAt: string;
+  note: string;
 };
 
 export const APPLICANT_KEY = "fpis.applicant";
@@ -58,4 +118,9 @@ export function readApplicant(): ApplicantProfile | null {
 export function readApplications(): ExportApplication[] {
   const raw = localStorage.getItem(APPLICATIONS_KEY);
   return raw ? (JSON.parse(raw) as ExportApplication[]) : [];
+}
+
+/** Single place the console writes application records, so persistence and schema stay together. */
+export function writeApplications(applications: ExportApplication[]): void {
+  localStorage.setItem(APPLICATIONS_KEY, JSON.stringify(applications));
 }

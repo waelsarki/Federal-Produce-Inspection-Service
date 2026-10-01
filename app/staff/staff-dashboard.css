@@ -80,6 +80,39 @@
 .template-field-row > input { width: 100%; height: 36px; padding: 0 10px; border: 1px solid #d7dfd8; border-radius: 2px; font-size: 11px; }
 .template-field-row .permission-row { padding: 0; }
 .admin-panel-actions { display: flex; justify-content: flex-end; gap: 9px; margin-top: 18px; }
+/* Approval panel sits under each queue record. */
+.review-card-stacked { display: block; }
+.review-summary { display: grid; grid-template-columns: 1.1fr 1fr auto auto; align-items: center; gap: 16px; }
+/* The summary now nests these one level deeper, so they need the same stacked
+   treatment .review-card > div used to give them. .review-actions is excluded:
+   this selector is specific enough to beat .review-actions and would otherwise
+   turn its flex row into a grid and stack the buttons. */
+.review-summary > div:not(.review-actions) { display: grid; gap: 4px; min-width: 0; }
+.approval-panel { margin-top: 13px; padding-top: 12px; border-top: 1px dashed var(--line); }
+.approval-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.approval-stage { display: inline-flex; align-items: center; gap: 6px; padding: 5px 9px; border-radius: 2px; font-size: 10px; font-weight: 700; }
+.approval-stage-awaiting { color: #805d20; background: #f4f0df; }
+.approval-stage-approved { color: #17543f; background: #e2ede6; }
+.approval-stage-rejected { color: #9c4537; background: #f6e7e4; }
+.approval-stage-dot { width: 6px; height: 6px; background: currentColor; border-radius: 50%; }
+.approval-blocked { margin: 8px 0 0; color: var(--muted); font-size: 10.5px; }
+.approval-decide { margin-top: 12px; padding: 13px; background: #f7faf7; border: 1px solid #e1e9e2; border-radius: 2px; }
+.approval-decide textarea { width: 100%; padding: 8px 10px; border: 1px solid #d7dfd8; border-radius: 2px; font: inherit; font-size: 11px; resize: vertical; }
+.approval-decide-actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
+.approval-decide-actions .admin-button { gap: 6px; }
+.admin-button-danger { color: #9c4537; border-color: #ddb9b2; }
+.admin-button-danger:hover:not(:disabled) { color: #fff; background: #9c4537; border-color: #9c4537; }
+.admin-message-error { color: #9c4537; }
+.approval-trail { margin-top: 12px; }
+.approval-trail summary { color: var(--green); cursor: pointer; font-size: 10.5px; font-weight: 700; }
+.approval-trail ol { margin: 9px 0 0; padding: 0 0 0 3px; list-style: none; display: grid; gap: 9px; }
+.approval-event { display: grid; gap: 2px; padding-left: 11px; border-left: 2px solid var(--line); }
+.approval-event-approved { border-left-color: #7fa48d; }
+.approval-event-rejected { border-left-color: #c98a7c; }
+.approval-event strong { font-size: 11px; }
+.approval-event span { color: var(--muted); font-size: 10px; }
+.approval-event small { color: #8a978f; font-size: 9px; }
+.approval-event p { margin: 3px 0 0; color: var(--ink); font-size: 10.5px; line-height: 1.55; }
 /* Touch targets. The compact sizing above suits a mouse, but 31-34px controls
    are hard to hit on glass: WCAG 2.5.8 asks for 24px minimum and platform
    guidance (iOS HIG, Material) for ~44px. Applied on coarse pointers, and by
@@ -94,5 +127,5 @@
   .password-toggle { width: 44px; height: 44px; right: 0; }
   .password-field input { padding-right: 52px; }
 }
-@media (max-width: 1050px) { .staff-workspace { grid-template-columns: 205px minmax(0, 1fr); } .analytics-grid { grid-template-columns: repeat(2, 1fr); } .review-card { grid-template-columns: 1fr 1fr; } .review-actions { justify-content: flex-start; } }
-@media (max-width: 700px) { .staff-workspace { display: block; } .staff-sidebar { position: static; min-height: 0; max-height: none; overflow: visible; padding: 20px 16px 15px; } .sidebar-heading { padding-bottom: 17px; } .sidebar-heading h1 { font-size: 23px; } .sidebar-nav { grid-template-columns: repeat(2, 1fr); gap: 3px; padding: 14px 0; } .sidebar-account { margin-top: 0; } .staff-main { padding: 28px 5% 54px; } .staff-main-header { align-items: flex-start; flex-direction: column; } .staff-date { align-self: flex-start; } .analytics-grid { grid-template-columns: 1fr; } .review-card { grid-template-columns: 1fr; gap: 9px; } .review-actions { flex-wrap: wrap; } .template-field-row { grid-template-columns: 1fr; gap: 7px; } .activity-row { grid-template-columns: 26px minmax(0, 1fr); gap: 10px; } .activity-meta { grid-column: 2; justify-items: start; } .activity-open { grid-column: 2; justify-self: start; } }
+@media (max-width: 1050px) { .staff-workspace { grid-template-columns: 205px minmax(0, 1fr); } .analytics-grid { grid-template-columns: repeat(2, 1fr); } .review-summary { grid-template-columns: 1fr 1fr; } .review-actions { justify-content: flex-start; } }
+@media (max-width: 700px) { .staff-workspace { display: block; } .staff-sidebar { position: static; min-height: 0; max-height: none; overflow: visible; padding: 20px 16px 15px; } .sidebar-heading { padding-bottom: 17px; } .sidebar-heading h1 { font-size: 23px; } .sidebar-nav { grid-template-columns: repeat(2, 1fr); gap: 3px; padding: 14px 0; } .sidebar-account { margin-top: 0; } .staff-main { padding: 28px 5% 54px; } .staff-main-header { align-items: flex-start; flex-direction: column; } .staff-date { align-self: flex-start; } .analytics-grid { grid-template-columns: 1fr; } .review-summary { grid-template-columns: 1fr; gap: 9px; } .review-actions { flex-wrap: wrap; } .template-field-row { grid-template-columns: 1fr; gap: 7px; } .activity-row { grid-template-columns: 26px minmax(0, 1fr); gap: 10px; } .activity-meta { grid-column: 2; justify-items: start; } .activity-open { grid-column: 2; justify-self: start; } }

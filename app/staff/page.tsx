@@ -3,12 +3,13 @@
 import Link from "next/link";
 import { FormEvent, useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
-import { APPLICATIONS_KEY, ExportApplication } from "@/lib/portal";
-import { StaffAccount, StaffPermission, can, changeStaffPassword, readRoles, readStaffSession, roleLabel, signOutStaff, updateStaffProfile } from "@/lib/staff";
+import { APPLICATIONS_KEY, ExportApplication, writeApplications } from "@/lib/portal";
+import { ApprovalLevel, StaffAccount, StaffPermission, can, changeStaffPassword, readRoles, readStaffSession, readWorkflow, roleLabel, signOutStaff, updateStaffProfile } from "@/lib/staff";
 import PasswordField from "@/components/PasswordField";
 import RoleManager from "@/components/admin/RoleManager";
 import ApprovalLevelManager from "@/components/admin/ApprovalLevelManager";
 import ActivityFeed from "@/components/admin/ActivityFeed";
+import ApprovalPanel from "@/components/admin/ApprovalPanel";
 import CertificateTemplateManager from "@/components/admin/CertificateTemplateManager";
 import {
   Award,
@@ -46,6 +47,7 @@ export default function StaffPage() {
   const [activePanel, setActivePanel] = useState<StaffPanel>("overview");
   const [account, setAccount] = useState<StaffAccount | null>(null);
   const [applications, setApplications] = useState<ExportApplication[]>([]);
+  const [levels, setLevels] = useState<ApprovalLevel[]>([]);
   const [passwordMessage, setPasswordMessage] = useState("");
   const [profileMessage, setProfileMessage] = useState("");
 
@@ -55,7 +57,18 @@ export default function StaffPage() {
     setAccount(session);
     const raw = localStorage.getItem(APPLICATIONS_KEY);
     setApplications(raw ? (JSON.parse(raw) as ExportApplication[]) : []);
+    setLevels(readWorkflow());
   }, [router]);
+
+  // Replaces one record with the decided version and persists the whole list,
+  // so the queue, the Overview counts and the activity feed all agree.
+  function applyDecision(next: ExportApplication) {
+    setApplications((current) => {
+      const updated = current.map((entry) => (entry.applicationNumber === next.applicationNumber ? next : entry));
+      writeApplications(updated);
+      return updated;
+    });
+  }
 
   function handleSignOut(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -146,7 +159,28 @@ export default function StaffPage() {
           {current === "applications" ? (
             <section className="staff-panel staff-panel-flush">
               <div className="staff-panel-head"><div><p className="eyebrow">WORK QUEUE</p><h3>Applications in review</h3></div><span className="panel-count">{applications.length} records</span></div>
-              {applications.length === 0 ? <div className="empty-state staff-empty"><span className="empty-symbol">—</span><h2>No applications yet</h2><p>Submitted applications will appear here for inspection review and certificate issuance.</p></div> : <div className="review-list">{applications.map((application) => <article className="review-card" key={application.applicationNumber}><div className="review-number"><span>{application.applicationNumber}</span><small>{new Date(application.submittedAt).toLocaleDateString("en-GB")}</small></div><div><strong>{application.commodity || "Agricultural produce"}</strong><small>{application.destination} · {application.consigneeName}</small></div><span className="status-pill">{application.status}</span><div className="review-actions">{can(account, "applications.view") ? <Link className="admin-button" href={`/certificate/${application.applicationNumber}`}>Review</Link> : null}<Link className="admin-button admin-button-primary" href={`/certificate/${application.applicationNumber}`}>Print certificate</Link></div></article>)}</div>}
+              {applications.length === 0 ? (
+                <div className="empty-state staff-empty"><span className="empty-symbol">—</span><h2>No applications yet</h2><p>Submitted applications will appear here for inspection review and certificate issuance.</p></div>
+              ) : (
+                <div className="review-list">
+                  {applications.map((application) => (
+                    <article className="review-card review-card-stacked" key={application.applicationNumber}>
+                      <div className="review-summary">
+                        <div className="review-number"><span>{application.applicationNumber}</span><small>{new Date(application.submittedAt).toLocaleDateString("en-GB")}</small></div>
+                        <div><strong>{application.commodity || "Agricultural produce"}</strong><small>{application.destination} · {application.consigneeName}</small></div>
+                        <span className="status-pill">{application.status}</span>
+                        <div className="review-actions">
+                          {can(account, "applications.view") ? <Link className="admin-button" href={`/certificate/${application.applicationNumber}`}>Review</Link> : null}
+                          <Link className="admin-button admin-button-primary" href={`/certificate/${application.applicationNumber}`}>Print certificate</Link>
+                        </div>
+                      </div>
+                      {can(account, "applications.decide") ? (
+                        <ApprovalPanel application={application} levels={levels} account={account} onDecide={applyDecision} />
+                      ) : null}
+                    </article>
+                  ))}
+                </div>
+              )}
             </section>
           ) : null}
 

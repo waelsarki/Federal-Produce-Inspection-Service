@@ -144,7 +144,13 @@ The super admin console can configure roles and the approval workflow. Both are 
 
 Both panels only render for a signed-in account whose role grants `roles.manage` and `workflow.manage` respectively.
 
-**What this does not do:** the workflow is configuration only. No application is actually advanced, approved or rejected against these levels yet — that remains listed under Prototype limits.
+**How decisions are made.** `lib/approvals.ts` runs the workflow. An application walks the levels in order; a level marked *required* must reach its approval quota before the next one opens, and a level that is not required never blocks completion. One account holds at most one decision per level, so a quota above 1 genuinely needs different people. The work queue shows the open level, an optional note, Approve / Reject controls, and the decision trail; each entry records who decided, at which level, when, and the note. `recordDecision` runs the authorisation check itself rather than trusting the caller, and moves the record's free-text status to match.
+
+**Super Admin is deliberately exempt.** It may decide any level regardless of the role bound to it, and a single Super Admin approval satisfies the level outright. That is what lets one person carry an application from end to end. It is an administrative shortcut with no segregation of duties, which is exactly why real use needs a server that records the actor and refuses the shortcut.
+
+Two consequences of the shipped defaults worth knowing: the first level is bound to the Inspector role, but Inspector does not hold `applications.decide`, so in practice only Super Admin can clear it. And applications seeded before this engine existed carry no decisions, so the engine honours their free-text `status` instead — an already-issued certificate will not offer approval buttons.
+
+**What this does not do:** decisions are stored in browser storage and the trail is append-only only in the UI. It is not tamper-evident, and anyone with devtools can rewrite or delete it.
 
 ## Responsive behaviour
 
@@ -158,7 +164,8 @@ Verified with a headless sweep of all four routes (`/staff`, `/staff/login`, `/c
 
 - This front-end prototype stores one applicant profile and application records in the current browser's local storage. It is not production authentication or durable storage.
 - Staff sign-in has the same limits: seeded accounts are local to one browser, the session is a sessionStorage flag that is trivially forged, and role checks happen in the browser rather than on a server.
-- Payment checkout and evidence review, creating and editing staff accounts, executing approval decisions against the configured levels, official certificate issuance (the certificate sheet is a specimen generated in the browser), and secure barcode verification are not connected.
+- Payment checkout and evidence review, creating and editing staff accounts, official certificate issuance (the certificate sheet is a specimen generated in the browser), and secure barcode verification are not connected.
+- Approval decisions run in the browser against browser storage. Super Admin is exempt from role binding and from the approval quota, so a single person can approve an application alone; and the decision trail is not tamper-evident. Both need a server before they mean anything.
 - Generated references are preview identifiers, not official FPIS application or certificate numbers. The certificate number, register reference and station code on the specimen are derived from the application for display only.
 - The Overview's Recent activity feed is derived from application records, not an event log. It shows each application's current status and its submission date; it cannot show who approved or issued anything, or when that happened. A real activity trail needs server-side event recording.
 - Do not enter real personal, financial, or shipment data into this prototype.
