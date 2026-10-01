@@ -15,6 +15,11 @@ import "./footer-overrides.css";
 export const metadata: Metadata = {
   title: "FPIS | Produce Export Certification",
   description: "Apply for produce inspection and manage export certification with FPIS.",
+  icons: {
+    icon: "/icon.png",
+    shortcut: "/icon.png",
+    apple: "/icon.png",
+  },
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
