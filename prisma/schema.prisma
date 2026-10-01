@@ -1,0 +1,231 @@
+// FPIS certificate portal - persistent storage.
+//
+// Development runs on SQLite so nothing has to be installed. For production,
+// change the provider below to "postgresql" and point DATABASE_URL at your
+// server; every model below is portable, so that is the only edit required.
+//
+// Permissions and section names are stored as JSON strings because SQLite has
+// no native array or enum type. Prisma returns them as strings, so
+// lib/server/serialise.ts decodes them before the rest of the app sees them.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+/// An exporter applying for a phytosanitary certificate.
+model Applicant {
+  id           String @id
+  fullName     String
+  organization String
+  address      String?
+  email        String
+  phoneNumber  String
+  /// bcrypt hash. Never leaves the server.
+  passwordHash String
+  createdAt    String @default("")
+  updatedAt    String @default("")
+
+  applications ExportApplication[]
+
+  @@index([email])
+}
+
+/// One export inspection application, the parent of everything below.
+model ExportApplication {
+  applicationNumber String @id
+  applicantId       String
+  submittedAt       String
+  status            String
+
+  consigneeName     String
+  consigneeAddress  String
+  commodity         String
+  hsCode            String
+  goodsDescription  String
+  grossWeight       String
+  netWeight         String
+  vesselAndVoyage   String
+  destination       String
+  nxpNumber         String
+  shipmentDate      String
+
+  fumigationDate     String?
+  fumigant           String?
+  standardPack       String?
+  packagingCondition String?
+  moistureContent    String?
+  grade              String?
+  estimatedValue     String?
+  vessel             String?
+  voyage             String?
+  billOfLadingNumber String?
+  billOfLadingDate   String?
+  portOfLoading      String?
+
+  applicant    Applicant          @relation(fields: [applicantId], references: [id])
+  decisions    ApprovalDecision[]
+  /// Staff-completed certificate values. One per application.
+  certificate  CertificateData?
+
+  @@index([applicantId])
+  @@index([submittedAt])
+}
+
+/// Staff overrides for a certificate, kept separate from the applicant's own
+/// submission so both remain readable and the override is always tellable apart.
+model CertificateData {
+  applicationNumber String @id
+  issuedAt          String?
+  issuedBy          String?
+
+  exporterOrganization String?
+  exporterAddress      String?
+  consigneeName        String?
+  consigneeAddress     String?
+  goodsDescription     String?
+  hsCode               String?
+  fumigationDate       String?
+  fumigant             String?
+  standardPack         String?
+  grossWeight          String?
+  netWeight            String?
+  shipmentDate         String?
+  grade                String?
+  packagingCondition   String?
+  nxpNumber            String?
+  estimatedValue       String?
+  moistureContent      String?
+  vessel               String?
+  voyage               String?
+  destination          String?
+  billOfLadingNumber   String?
+  billOfLadingDate     String?
+  portOfLoading        String?
+
+  application ExportApplication @relation(fields: [applicationNumber], references: [applicationNumber], onDelete: Cascade)
+}
+
+/// One person's decision at one approval level.
+///
+/// Level label, order and the actor's name and role are snapshotted so the
+/// trail still reads correctly after the workflow or the account is renamed or
+/// deleted. Rows are never updated or deleted, which is what makes the trail
+/// append-only.
+model ApprovalDecision {
+  id                String @id
+  applicationNumber String
+  levelId           String
+  levelLabel        String
+  levelOrder        Int
+  /// "approved" | "rejected"
+  decision          String
+  staffId           String
+  staffName         String
+  staffRoleId       String
+  decidedAt         String
+  note              String @default("")
+
+  application ExportApplication @relation(fields: [applicationNumber], references: [applicationNumber], onDelete: Cascade)
+
+  @@index([applicationNumber])
+  /// One account holds at most one decision per level: a quota above 1 needs
+  /// genuinely different people, which is the segregation of duties.
+  @@unique([applicationNumber, levelId, staffId])
+}
+
+/// A configurable staff role. System roles cannot be deleted.
+model StaffRole {
+  id          String @id
+  label       String
+  description String @default("")
+  /// JSON array of StaffPermission ids.
+  permissions String @default("[]")
+  /// 1 = system, cannot be deleted.
+  system      Int    @default(0)
+
+  accounts StaffAccount[]
+  levels   ApprovalLevel[]
+}
+
+/// A staff sign-in account.
+model StaffAccount {
+  id           String @id
+  email        String @unique
+  fullName     String
+  roleId       String
+  /// bcrypt hash. Never leaves the server.
+  passwordHash String
+  createdAt    String
+  active       Int    @default(1)
+
+  role     StaffRole @relation(fields: [roleId], references: [id])
+  sessions Session[]
+
+  @@index([roleId])
+}
+
+/// A server-side session. The cookie carries only an opaque id; the browser
+/// cannot forge one, because the row has to exist here.
+model Session {
+  id        String @id
+  staffId   String
+  createdAt String
+  expiresAt String
+
+  staff StaffAccount @relation(fields: [staffId], references: [id], onDelete: Cascade)
+
+  @@index([staffId])
+  @@index([expiresAt])
+}
+
+/// One step in the approval workflow.
+model ApprovalLevel {
+  id        String @id
+  label     String
+  roleId    String
+  order     Int
+  /// How many staff of this role must sign off.
+  requiredApprovals Int @default(1)
+  slaDays          Int @default(1)
+  /// 1 = a required level must pass before the application can advance.
+  required         Int @default(1)
+
+  role StaffRole @relation(fields: [roleId], references: [id])
+}
+
+/// Which certificate fields are shown, and in what order.
+model CertificateFieldConfig {
+  id      String @id
+  label   String
+  section String
+  enabled Int    @default(1)
+  order   Int
+}
+
+/// A real event log: who did what, to which record, and when.
+///
+/// This is what lib/activity.ts could not be while everything lived in browser
+/// storage. Rows are only ever inserted, never updated or deleted.
+model AuditEvent {
+  id String @id
+  /// "staff" | "applicant" | "system"
+  actorType String
+  actorId   String?
+  /// Snapshotted, so the entry still names someone if the account is deleted.
+  actorName String
+  /// e.g. "login", "application.submit", "certificate.issue"
+  action    String
+  entity    String?
+  entityId  String?
+  detail    String @default("")
+  at        String
+  ip        String @default("")
+
+  @@index([at])
+  @@index([entityId])
+}

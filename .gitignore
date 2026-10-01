@@ -7,3 +7,8 @@ obj/
 .vs/
 .env*
 !.env.example
+
+# Local database. The schema and migrations in prisma/migrations are committed;
+# the SQLite file itself is not.
+prisma/*.db
+prisma/*.db-journal
