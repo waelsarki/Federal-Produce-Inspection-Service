@@ -2,6 +2,7 @@ export type ApplicantProfile = {
   id: string;
   fullName: string;
   organization: string;
+  address?: string;
   email: string;
   phoneNumber: string;
   passwordHash: string;
@@ -23,6 +24,18 @@ export type ExportApplication = {
   destination: string;
   nxpNumber: string;
   shipmentDate: string;
+  fumigationDate?: string;
+  fumigant?: string;
+  standardPack?: string;
+  packagingCondition?: string;
+  moistureContent?: string;
+  grade?: string;
+  estimatedValue?: string;
+  vessel?: string;
+  voyage?: string;
+  billOfLadingNumber?: string;
+  billOfLadingDate?: string;
+  portOfLoading?: string;
 };
 
 export const APPLICANT_KEY = "fpis.applicant";

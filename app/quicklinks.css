@@ -62,7 +62,69 @@
 .directory-actions{gap:12px}
 }
 
-.inline-link{color:var(--green);font-weight:700;text-decoration:underline;text-underline-offset:3px}
+.password-field{position:relative}
+.field-spaced{margin-top:12px}
+.password-field input{padding-right:42px}
+.password-toggle{position:absolute;right:5px;top:50%;width:30px;height:30px;display:grid;place-items:center;transform:translateY(-50%);color:#5f6d65;background:transparent;border:1px solid transparent;border-radius:2px;cursor:pointer;transition:color .18s ease,background .18s ease}
+.password-toggle:hover{color:var(--green);background:#eef2ec}
+.password-toggle:focus-visible{outline:none;color:var(--green);background:#eef2ec;border-color:#b9c8bf}
+.password-toggle[aria-pressed="true"]{color:var(--green)}
+
+/* Super admin configuration: roles and approval workflow. */
+.admin-panel{margin-top:26px;padding:24px 26px 26px;background:white;border:1px solid var(--line);box-shadow:0 12px 30px #18392b08}
+.admin-panel-head{display:flex;justify-content:space-between;align-items:flex-start;gap:20px;flex-wrap:wrap;padding-bottom:15px;margin-bottom:17px;border-bottom:1px solid var(--line)}
+.admin-panel-head h2{margin:0 0 5px;font-family:Manrope,sans-serif;font-size:17px;font-weight:600}
+.admin-panel-head p{margin:0;color:var(--muted);font-size:11.5px;line-height:1.6}
+.admin-panel-actions{display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+.admin-count{color:var(--muted);font-size:10px;white-space:nowrap}
+.admin-button{min-height:31px;display:inline-flex;align-items:center;justify-content:center;padding:0 12px;color:var(--green);background:white;border:1px solid #b9c8bf;border-radius:2px;font-size:10.5px;font-weight:700;cursor:pointer;transition:background .18s ease,color .18s ease,border-color .18s ease}
+.admin-button:hover:not(:disabled){color:white;background:var(--green);border-color:var(--green)}
+.admin-button:disabled{color:#a9b3ac;border-color:#dde3dd;cursor:not-allowed}
+.admin-button-danger{color:var(--red);border-color:#e0c6bf}
+.admin-button-danger:hover:not(:disabled){color:white;background:var(--red);border-color:var(--red)}
+.admin-button-icon{width:28px;min-height:26px;padding:0;font-size:11px}
+.admin-message{margin:15px 0 0;padding:10px 13px;color:#3f5a49;background:#eef4ee;border-left:3px solid var(--green);font-size:11.5px}
+.admin-hint{margin:11px 0 0;color:var(--muted);font-size:10.5px}
+.role-list,.level-list{margin:0;padding:0;display:grid;gap:12px;list-style:none}
+.role-card{padding:15px 16px;border:1px solid var(--line);border-radius:2px}
+.role-card-head{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;flex-wrap:wrap}
+.role-card-head strong{display:inline-block;margin-right:8px;font-family:Manrope,sans-serif;font-size:13.5px}
+.role-card-head small{display:block;margin-top:4px;color:var(--muted);font-size:11px;line-height:1.55}
+.role-card-actions{display:flex;gap:7px}
+.role-badge{padding:2px 7px;color:var(--gold);background:#f7f3e6;border-radius:2px;font-size:8.5px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;vertical-align:2px}
+.role-permission-summary{margin:11px 0 0;color:var(--muted);font-size:10.5px}
+.role-permissions{margin-top:13px;padding-top:13px;border-top:1px dashed var(--line);display:grid;gap:2px}
+.permission-row{display:flex;align-items:flex-start;gap:10px;padding:7px 0;cursor:pointer}
+.permission-row input{flex:0 0 auto;width:15px;height:15px;margin-top:1px;accent-color:var(--green)}
+.permission-row span{display:block}
+.permission-row strong{display:block;font-size:11.5px}
+.permission-row small{display:block;color:var(--muted);font-size:10.5px;line-height:1.5}
+.permission-row input:disabled ~ span{opacity:.65}
+.admin-create{margin-top:18px;padding-top:17px;border-top:1px solid var(--line)}
+.admin-create h3{margin:0 0 12px;font-family:Manrope,sans-serif;font-size:13px;font-weight:600}
+.admin-create .button{margin-top:15px}
+.level-row{display:grid;grid-template-columns:64px minmax(0,1fr);gap:14px;padding:15px 16px;border:1px solid var(--line);border-radius:2px}
+.level-order{display:flex;flex-direction:column;align-items:center;gap:9px}
+.level-order>span{color:var(--gold);font-family:Manrope,sans-serif;font-size:15px;font-weight:700}
+.level-move{display:grid;gap:5px}
+.level-fields{display:grid;grid-template-columns:minmax(180px,1.5fr) minmax(150px,1fr) 118px 108px;gap:13px;align-items:end}
+.level-fields .field input,.level-fields .field select{height:41px}
+.level-fields .field select{width:100%;padding:0 10px;color:var(--ink);background:#fcfdfb;border:1px solid #d7dfd8;border-radius:2px;font-size:12px}
+.field-narrow{max-width:130px}
+.level-required{align-self:center;padding:0}
+.level-fields>.admin-button{align-self:center}
+
+@media(max-width:850px){
+.level-fields{grid-template-columns:1fr 1fr}
+}
+
+@media(max-width:620px){
+.admin-panel{padding:19px 16px 20px}
+.level-row{grid-template-columns:1fr}
+.level-order{flex-direction:row;justify-content:space-between}
+.level-fields{grid-template-columns:1fr}
+.field-narrow{max-width:none}
+}
 .quicklinks-page{max-width:1120px;margin:auto;padding:56px 34px 90px}
 .quicklinks-top{display:flex;justify-content:space-between;align-items:end;gap:30px;padding-bottom:24px;border-bottom:1px solid var(--line)}
 .quicklinks-top h1{margin:0 0 10px;font-family:Manrope,sans-serif;font-size:clamp(33px,3.4vw,46px);line-height:1.1;font-weight:600}

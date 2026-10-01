@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { FormEvent, useState } from "react";
 import { APPLICANT_KEY, INTAKE_KEY, ApplicantProfile, hashPassword, readApplicant } from "@/lib/portal";
+import PasswordField from "@/components/PasswordField";
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -26,6 +27,7 @@ export default function RegisterPage() {
       id: crypto.randomUUID(),
       fullName: String(data.get("fullName")).trim(),
       organization: String(data.get("organization")).trim(),
+      address: String(data.get("address") ?? "").trim(),
       email,
       phoneNumber: String(data.get("phoneNumber")).trim(),
       passwordHash: await hashPassword(String(data.get("password"))),
@@ -45,9 +47,10 @@ export default function RegisterPage() {
           <div className="field-grid">
             <div className="field field-wide"><label htmlFor="fullName">Contact person&apos;s full name</label><input id="fullName" name="fullName" autoComplete="name" maxLength={120} required placeholder="e.g. Ada Okafor" /></div>
             <div className="field field-wide"><label htmlFor="organization">Business or exporter name</label><input id="organization" name="organization" autoComplete="organization" maxLength={180} required placeholder="Registered exporter or business name" /></div>
+            <div className="field field-wide"><label htmlFor="address">Registered business address</label><input id="address" name="address" autoComplete="street-address" maxLength={300} required placeholder="Street, city, state, country" /></div>
             <div className="field"><label htmlFor="email">Email address</label><input id="email" name="email" type="email" autoComplete="email" maxLength={254} required placeholder="name@company.com" /></div>
             <div className="field"><label htmlFor="phoneNumber">Mobile number</label><input id="phoneNumber" name="phoneNumber" type="tel" autoComplete="tel" maxLength={30} required placeholder="+234" /></div>
-            <div className="field field-wide"><label htmlFor="password">Create password (12 characters minimum)</label><input id="password" name="password" type="password" autoComplete="new-password" minLength={12} maxLength={100} required placeholder="At least 12 characters" /></div>
+            <PasswordField className="field-wide" id="password" name="password" label="Create password (12 characters minimum)" autoComplete="new-password" minLength={12} maxLength={100} placeholder="At least 12 characters" />
           </div>
           {error && <p className="validation-summary" role="alert">{error}</p>}
           <button className="button form-submit" type="submit" disabled={busy}>{busy ? "Creating profile…" : <>Continue to application <span aria-hidden="true">→</span></>}</button>

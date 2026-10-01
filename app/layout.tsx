@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { AtSign, Camera, Play, Share2 } from "lucide-react";
 import QuickLinkItem from "@/components/QuickLinkItem";
 import QuickLinksMenu from "@/components/QuickLinksMenu";
 import { FPIS_ESERVICES, FPIS_FOOTER_LINK_GROUPS } from "@/lib/quicklinks";
@@ -7,6 +8,8 @@ import "./globals.css";
 import "./hero-overrides.css";
 import "./quicklinks.css";
 import "./information.css";
+import "./certificate.css";
+import "./footer-overrides.css";
 
 export const metadata: Metadata = {
   title: "FPIS | Produce Export Certification",
@@ -19,7 +22,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
       <body>
         <header className="site-header">
           <Link className="brand" href="/" aria-label="FPIS home">
-            <span className="brand-mark" aria-hidden="true">F</span>
+            <img className="brand-logo" src="/images/fpis-logo.png" alt="" />
             <span className="brand-copy"><strong>FPIS</strong><small>Federal Produce Inspection Service</small></span>
           </Link>
           <nav className="main-nav" aria-label="Main navigation">
@@ -91,6 +94,13 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
           <span>Federal Produce Inspection Service</span>
           <span>Federal Ministry of Industry, Trade &amp; Investment</span>
           <span><Link href="/information">Information centre</Link></span>
+          <span><Link href="/staff/login">Staff login</Link></span>
+          <nav className="social-links" aria-label="FPIS social media">
+            <a href="https://www.facebook.com/" target="_blank" rel="noreferrer" aria-label="FPIS on Facebook" title="Facebook"><Share2 aria-hidden="true" size={16} strokeWidth={1.8} /></a>
+            <a href="https://www.instagram.com/" target="_blank" rel="noreferrer" aria-label="FPIS on Instagram" title="Instagram"><Camera aria-hidden="true" size={16} strokeWidth={1.8} /></a>
+            <a href="https://www.linkedin.com/" target="_blank" rel="noreferrer" aria-label="FPIS on LinkedIn" title="LinkedIn"><AtSign aria-hidden="true" size={16} strokeWidth={1.8} /></a>
+            <a href="https://www.youtube.com/" target="_blank" rel="noreferrer" aria-label="FPIS on YouTube" title="YouTube"><Play aria-hidden="true" size={16} strokeWidth={1.8} /></a>
+          </nav>
         </footer>
       </body>
     </html>

@@ -17,7 +17,7 @@ export default function HomePage() {
         </div>
         <div className="certificate-preview" aria-label="Illustration of a digitally verifiable FPIS quality certificate">
           <div className="certificate-topline"><span>FEDERAL REPUBLIC OF NIGERIA</span><span>FPIS / EXPORT</span></div>
-          <div className="certificate-seal">FPIS</div>
+          <div className="certificate-seal"><img src="/images/fpis-logo.png" alt="FPIS official seal" /></div>
           <p className="certificate-ministry">FEDERAL MINISTRY OF INDUSTRY, TRADE &amp; INVESTMENT</p>
           <h2>Certificate of Quality</h2>
           <p className="certificate-subtitle">Fumigation, packaging materials &amp; weight</p>

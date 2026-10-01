@@ -115,6 +115,7 @@ export const FPIS_QUICK_LINK_GROUPS: QuickLinkGroup[] = [
       { label: "History", href: infoHref("history") },
       { label: "Contact", href: infoHref("contact") },
       { label: "Login", href: "/login" },
+      { label: "Staff login", href: "/staff/login" },
       { label: "Home", href: "/" },
     ],
     sections: [],

@@ -74,6 +74,18 @@
 			"isBackground": false,
 			"problemMatcher": [],
 			"group": "build"
+		},
+		{
+			"label": "Install FPIS social icons",
+			"type": "shell",
+			"command": "npm.cmd",
+			"args": [
+				"install",
+				"lucide-react"
+			],
+			"isBackground": false,
+			"problemMatcher": [],
+			"group": "build"
 		}
 	]
 }

@@ -56,11 +56,80 @@ Pages where FPIS has published no content yet (press releases, circulars, events
 
 Applicants register before starting an application. Registration continues directly to shipment details without requiring a sign-in. Applicants sign in later to search their dashboard by application number.
 
+## Certificate specimen
+
+`/certificate/<application-number>` renders the certificate the Service issues for an approved export — **Certificate of Quality, Fumigation, Good Packaging Materials & Weight**. The dashboard links to it from the *Certificate* column as "Preview certificate". It is generated from the application stored in the same browser.
+
+The sheet is laid out to match the Service's printed certificate:
+
+- A4 (210 × 297 mm) on security paper, with the ministry letterhead, the national crest and the FPIS watermark.
+- Certificate number (`NO: 20653`) and register reference (`REF : FP//AP/VOL..II/5753`) in the top right, above the issue date in the Service's format with its ordinal suffix: `25TH MAY, 2026`.
+- The eleven numbered items in the Service's order: (1) exporter, (2) consignee, (3) description of commodity, (4) fumigation date, fumigant and the 21-day repetition note, (5) standard pack, (6) gross and net weight, (7) shipment date and grade, (8) packaging condition, (9) NXP form number and estimated value, (10) moisture content, (11) vessel and voyage, destination, bill of lading and port of loading.
+- `QUALITY ANALYSIS OF EXPORT` with the grade, the circulation list (Exporter, Director FPIS, Issuing Station) and the `FOR: DIRECTOR,` signature block.
+- Dotted leader rules run out to the right margin on every entry, and items without a value keep the empty rule, as the paper form does.
+
+| Route | Purpose |
+|---|---|
+| `/certificate/<application-number>` | The certificate sheet for one application, with print output |
+
+**Where the sheet comes from**
+
+- `components/CertificateSheet.tsx` renders the entry layer; `app/certificate.css` positions it on the page in millimetres so screen and print match the paper.
+- `public/images/fpis-crest.png` and `public/images/fpis-logo.png` are the national crest and the Service emblem, taken from the letterhead of the supplied certificate and cleaned so that only the artwork is left. The security micro-text and the watermark are drawn by `app/certificate.css` around them, so the letterhead stays sharp at any zoom and in print.
+- `lib/certificate.ts` turns an application into a certificate: kilogram weights become MTS to three decimals, dates become `DD/MM/YYYY`, the issue date takes its ordinal form, the certificate number and register reference are derived from the application number (so one application always shows the same pair), the station code in the reference comes from the port of loading, and `QUALITY ANALYSIS OF EXPORT` repeats the grade recorded on the application.
+- Fields the application does not collect yet — bill of lading details after sailing, for example — print as the empty dotted rule the paper form carries until an officer fills them in.
+
+**Printing.** "Print or save as PDF" prints the sheet on its own at A4 with the security paper intact; on screen the sheet scales down to fit narrow windows.
+
+**This is a specimen, not an issuance.** The sheet carries a printed line saying so, and the prototype notice above it repeats it. Nothing is signed, registered, numbered from an official register or digitally verifiable — `/verify` still returns application records only.
+
+## Staff access
+
+A separate staff portal exists alongside the applicant flow.
+
+| Route | Purpose |
+|---|---|
+| `/staff/login` | Staff sign-in |
+| `/staff` | Super admin console (guarded, redirects to sign-in without a session) |
+
+`lib/staff.ts` seeds one **super admin** account (`waelsarki@gmail.com`) into browser storage on first use. Seeding is idempotent — an existing account with that email is never overwritten, so a rotated password survives a reload.
+
+Reach it from the footer ("Staff login") or from the Quick links menu under **More → Staff login**.
+
+**Handle the seeded credential carefully.**
+
+- Only the SHA-256 hash of the password is stored in `lib/staff.ts`; the password itself is not in the repository or the server-rendered HTML. The hash does reach the client JavaScript bundle, so treat it as a published default, not a secret.
+- Sign in and change the password from the console before sharing this build with anyone.
+- Staff accounts live in one browser's local storage, exactly like applicant accounts. Anyone with browser devtools can read or edit them.
+
+## Roles and approval levels
+
+The super admin console can configure roles and the approval workflow. Both are stored in browser storage and seeded once, so existing configuration is never overwritten on reload.
+
+**Roles** (`components/admin/RoleManager.tsx`, stored under `fpis.staffRoles`)
+
+- Each role has a name, description and a set of permissions.
+- Create roles from the console; new roles start with `applications.view` only, so grant permissions deliberately.
+- Permissions come from a fixed catalogue in `lib/staff.ts` (`STAFF_PERMISSIONS`): view, review, decide approvals, issue certificates, manage staff and roles, and configure the workflow. The catalogue is fixed because arbitrary permission strings would need a server to evaluate.
+- Super Admin is a system role: its permissions are locked and it cannot be deleted.
+- A role is refused deletion while an account is assigned to it or an approval level still points at it, so configuration never breaks a reference.
+
+**Approval levels** (`components/admin/ApprovalLevelManager.tsx`, stored under `fpis.staffApprovalWorkflow`)
+
+- Applications advance through the levels in the order shown. Reorder with the ↑/↓ controls; `order` is renumbered on every save so it always matches the list.
+- Each level binds to a role, a number of approvals needed, a target in days, and a **required** flag. An optional level can be skipped.
+- Add levels, edit fields inline (text fields save on blur), remove levels, or **Reset** to the default three: inspection review → quality and certification sign-off → final approval.
+
+Both panels only render for a signed-in account whose role grants `roles.manage` and `workflow.manage` respectively.
+
+**What this does not do:** the workflow is configuration only. No application is actually advanced, approved or rejected against these levels yet — that remains listed under Prototype limits.
+
 ## Prototype limits
 
 - This front-end prototype stores one applicant profile and application records in the current browser's local storage. It is not production authentication or durable storage.
-- Payment checkout and evidence review, staff roles and Super Admin, inspection review, final approval, official certificate issuance, and secure barcode verification are not connected.
-- Generated references are preview identifiers, not official FPIS application or certificate numbers.
+- Staff sign-in has the same limits: seeded accounts are local to one browser, the session is a sessionStorage flag that is trivially forged, and role checks happen in the browser rather than on a server.
+- Payment checkout and evidence review, creating and editing staff accounts, executing approval decisions against the configured levels, official certificate issuance (the certificate sheet is a specimen generated in the browser), and secure barcode verification are not connected.
+- Generated references are preview identifiers, not official FPIS application or certificate numbers. The certificate number, register reference and station code on the specimen are derived from the application for display only.
 - Do not enter real personal, financial, or shipment data into this prototype.
 
 Production requires a trusted server-side backend, persistent database, secure identity/session management, payment-provider verification, protected document storage, auditable role-based approval, and signed certificate verification.
