@@ -503,3 +503,35 @@ Warning
 Import trace for requested module:
 ./app/staff/staff-dashboard.css.webpack[javascript/auto]!=!./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[14].oneOf[10].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[14].oneOf[10].use[3]!./app/staff/staff-dashboard.css
 ./app/staff/staff-dashboard.css
+ ⚠ ./app/staff/staff-dashboard.css.webpack[javascript/auto]!=!./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[14].oneOf[10].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[14].oneOf[10].use[3]!./app/staff/staff-dashboard.css
+Warning
+
+(53:37) autoprefixer: end value has mixed support, consider using flex-end instead
+
+Import trace for requested module:
+./app/staff/staff-dashboard.css.webpack[javascript/auto]!=!./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[14].oneOf[10].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[14].oneOf[10].use[3]!./app/staff/staff-dashboard.css
+./app/staff/staff-dashboard.css
+ ⚠ ./app/staff/staff-dashboard.css.webpack[javascript/auto]!=!./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[14].oneOf[10].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[14].oneOf[10].use[3]!./app/staff/staff-dashboard.css
+Warning
+
+(53:37) autoprefixer: end value has mixed support, consider using flex-end instead
+
+Import trace for requested module:
+./app/staff/staff-dashboard.css.webpack[javascript/auto]!=!./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[14].oneOf[10].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[14].oneOf[10].use[3]!./app/staff/staff-dashboard.css
+./app/staff/staff-dashboard.css
+ ⚠ ./app/staff/staff-dashboard.css.webpack[javascript/auto]!=!./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[14].oneOf[10].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[14].oneOf[10].use[3]!./app/staff/staff-dashboard.css
+Warning
+
+(53:37) autoprefixer: end value has mixed support, consider using flex-end instead
+
+Import trace for requested module:
+./app/staff/staff-dashboard.css.webpack[javascript/auto]!=!./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[14].oneOf[10].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[14].oneOf[10].use[3]!./app/staff/staff-dashboard.css
+./app/staff/staff-dashboard.css
+ ⚠ ./app/staff/staff-dashboard.css.webpack[javascript/auto]!=!./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[14].oneOf[10].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[14].oneOf[10].use[3]!./app/staff/staff-dashboard.css
+Warning
+
+(53:37) autoprefixer: end value has mixed support, consider using flex-end instead
+
+Import trace for requested module:
+./app/staff/staff-dashboard.css.webpack[javascript/auto]!=!./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[14].oneOf[10].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[14].oneOf[10].use[3]!./app/staff/staff-dashboard.css
+./app/staff/staff-dashboard.css

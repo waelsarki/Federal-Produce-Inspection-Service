@@ -148,3 +148,10 @@
  GET /verify 200 in 469ms
  ○ Compiling /verify ...
  GET /staff 200 in 151ms
+ GET /staff 200 in 77ms
+ GET /api/activity?limit=100 401 in 950ms
+ GET /api/activity?limit=100 401 in 954ms
+ GET / 200 in 1007ms
+ GET / 200 in 53ms
+ GET /staff/login 200 in 91ms
+ GET /staff/login 200 in 64ms
