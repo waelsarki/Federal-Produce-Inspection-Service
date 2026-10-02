@@ -131,3 +131,6 @@
  GET /staff/login 200 in 122ms
  ○ Compiling /verify ...
  GET /verify 200 in 740ms
+ ✓ Compiled /verify in 1556ms (783 modules)
+ ✓ Compiled in 475ms (783 modules)
+ GET /staff 200 in 709ms

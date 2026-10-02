@@ -16,7 +16,6 @@ import CertificateGenerator from "@/components/admin/CertificateGenerator";
 import {
   Award,
   ClipboardList,
-  ExternalLink,
   FileCog,
   House,
   KeyRound,
@@ -181,7 +180,6 @@ export default function StaffPage() {
                 <Link key={link.href} className="sidebar-link" href={link.href}>
                   <Icon className="sidebar-icon" size={16} strokeWidth={1.75} aria-hidden="true" />
                   {link.label}
-                  <ExternalLink className="sidebar-external" size={11} strokeWidth={1.75} aria-hidden="true" />
                 </Link>
               );
             })}
