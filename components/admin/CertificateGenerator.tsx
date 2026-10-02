@@ -2,10 +2,12 @@
 
 import Link from "next/link";
 import { useMemo, useState } from "react";
-import { Award, CheckCircle2, CircleAlert, FileSearch, Search } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { Award, CheckCircle2, CircleAlert, FilePlus2, FileSearch, Search } from "lucide-react";
 import { readCertificateConfig } from "@/lib/certificate-config";
 import { configuredCertificateInputs, missingRequiredFields, resolveCertificateData } from "@/lib/certificate-fields";
-import { ApplicantProfile, ExportApplication, readApplicant } from "@/lib/portal";
+import { ApplicantProfile, ExportApplication, readApplicant, writeApplications } from "@/lib/portal";
+import NewCertificateForm from "@/components/admin/NewCertificateForm";
 
 type Filter = "all" | "ready" | "incomplete";
 
@@ -21,12 +23,17 @@ type Filter = "all" | "ready" | "incomplete";
 export default function CertificateGenerator({
   applications,
   canIssue,
+  onCreated,
 }: {
   applications: ExportApplication[];
   canIssue: boolean;
+  /** Hands a freshly created record back so the queue can list it straight away. */
+  onCreated?: (application: ExportApplication) => void;
 }) {
+  const router = useRouter();
   const [query, setQuery] = useState("");
   const [filter, setFilter] = useState<Filter>("all");
+  const [creating, setCreating] = useState(false);
 
   // Read once: the template is configuration rather than per-application state,
   // and re-reading it on every keystroke would recount the whole queue.
@@ -49,6 +56,21 @@ export default function CertificateGenerator({
   }), [applications, config, exporter.organization, exporter.address]);
 
   const ready = rows.filter((row) => row.ready).length;
+
+  /**
+   * The certificate is persisted by the server, but the certificate page and the
+   * rest of the console still read from browser storage - that migration has not
+   * happened yet. Mirroring the record here is what lets the new certificate
+   * actually open; the server copy remains the authoritative one.
+   */
+  function handleCreated(application: ExportApplication) {
+    const existing = applications.filter(
+      (entry) => entry.applicationNumber !== application.applicationNumber,
+    );
+    writeApplications([...existing, application]);
+    onCreated?.(application);
+    router.push(`/certificate/${encodeURIComponent(application.applicationNumber)}`);
+  }
 
   const visible = useMemo(() => {
     const needle = query.trim().toLowerCase();
@@ -74,13 +96,31 @@ export default function CertificateGenerator({
           <p className="eyebrow">CERTIFICATE PRODUCTION</p>
           <h3>Generate a certificate</h3>
         </div>
-        <span className="panel-count">{ready} of {rows.length} ready</span>
+        <div className="audit-head-actions">
+          <span className="panel-count">{ready} of {rows.length} ready</span>
+          {canIssue ? (
+            <button
+              className="button button-small admin-button-primary"
+              type="button"
+              onClick={() => setCreating((open) => !open)}
+              aria-expanded={creating}
+            >
+              <FilePlus2 size={14} aria-hidden="true" /> Create new
+            </button>
+          ) : null}
+        </div>
       </div>
 
       <p className="panel-description">
         Pick an application to open its certificate. The generator asks for every field the configured template
         prints, with the answers the applicant already gave filled in, then shows the sheet to print or save as PDF.
+        Use <strong>Create new</strong> when there is no application on file and the certificate has to be entered
+        from scratch.
       </p>
+
+      {creating && canIssue ? (
+        <NewCertificateForm config={config} onCreated={handleCreated} onCancel={() => setCreating(false)} />
+      ) : null}
 
       {rows.length === 0 ? (
         <div className="empty-state staff-empty">

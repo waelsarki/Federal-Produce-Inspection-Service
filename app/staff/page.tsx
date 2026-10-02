@@ -9,22 +9,27 @@ import PasswordField from "@/components/PasswordField";
 import RoleManager from "@/components/admin/RoleManager";
 import ApprovalLevelManager from "@/components/admin/ApprovalLevelManager";
 import ActivityFeed from "@/components/admin/ActivityFeed";
+import AuditTrail from "@/components/admin/AuditTrail";
 import ApprovalPanel from "@/components/admin/ApprovalPanel";
 import CertificateTemplateManager from "@/components/admin/CertificateTemplateManager";
 import CertificateGenerator from "@/components/admin/CertificateGenerator";
 import {
   Award,
   ClipboardList,
+  ExternalLink,
   FileCog,
+  House,
   KeyRound,
   LayoutDashboard,
+  ScrollText,
+  ShieldCheck,
   UserCog,
   Users,
   Workflow,
   type LucideIcon,
 } from "lucide-react";
 
-type StaffPanel = "overview" | "applications" | "generated" | "certificate-template" | "workflow" | "roles" | "profile" | "password";
+type StaffPanel = "overview" | "applications" | "generated" | "audit" | "certificate-template" | "workflow" | "roles" | "profile" | "password";
 
 /**
  * The sidebar is the only navigation in this workspace, so each entry maps to
@@ -36,11 +41,28 @@ const STAFF_PANELS: { id: StaffPanel; label: string; icon: LucideIcon; permissio
   { id: "overview", label: "Overview", icon: LayoutDashboard },
   { id: "applications", label: "Review applications", icon: ClipboardList },
   { id: "generated", label: "Generate certificates", icon: Award },
+  // Same permission the /api/activity route itself enforces, so the entry
+  // disappears for exactly the accounts that could not open the page.
+  { id: "audit", label: "Audit trail", icon: ScrollText, permission: "applications.view" },
   { id: "certificate-template", label: "Configure certificate", icon: FileCog, permission: "certificates.issue" },
   { id: "workflow", label: "Approval workflow", icon: Workflow, permission: "workflow.manage" },
   { id: "roles", label: "Create user roles", icon: Users, permission: "roles.manage" },
   { id: "profile", label: "Admin profile", icon: UserCog },
   { id: "password", label: "Change password", icon: KeyRound },
+];
+
+/**
+ * Every page of the portal that exists, reachable from inside the workspace.
+ *
+ * The panels above switch the main area without leaving /staff, which left an
+ * officer with no way back to the public side of the portal or to a certificate
+ * by reference without editing the URL. These are plain links, kept separate
+ * from the panels because they leave the console rather than switching it.
+ */
+const PORTAL_LINKS: { href: string; label: string; icon: LucideIcon }[] = [
+  { href: "/", label: "Portal home", icon: House },
+  { href: "/verify", label: "Verify a certificate", icon: ShieldCheck },
+  { href: "/staff/login", label: "Staff sign-in", icon: KeyRound },
 ];
 
 export default function StaffPage() {
@@ -66,6 +88,17 @@ export default function StaffPage() {
   function applyDecision(next: ExportApplication) {
     setApplications((current) => {
       const updated = current.map((entry) => (entry.applicationNumber === next.applicationNumber ? next : entry));
+      writeApplications(updated);
+      return updated;
+    });
+  }
+
+  // A certificate raised at the counter arrives from the server rather than from
+  // a form on this page, so it is added to the same list every other panel reads
+  // and persisted with it. That keeps the Overview counts and the queue in step.
+  function applyCreated(next: ExportApplication) {
+    setApplications((current) => {
+      const updated = [...current.filter((entry) => entry.applicationNumber !== next.applicationNumber), next];
       writeApplications(updated);
       return updated;
     });
@@ -139,6 +172,20 @@ export default function StaffPage() {
               );
             })}
           </nav>
+
+          <div className="sidebar-nav sidebar-nav-portal">
+            <span className="sidebar-group-label">Portal</span>
+            {PORTAL_LINKS.map((link) => {
+              const Icon = link.icon;
+              return (
+                <Link key={link.href} className="sidebar-link" href={link.href}>
+                  <Icon className="sidebar-icon" size={16} strokeWidth={1.75} aria-hidden="true" />
+                  {link.label}
+                  <ExternalLink className="sidebar-external" size={11} strokeWidth={1.75} aria-hidden="true" />
+                </Link>
+              );
+            })}
+          </div>
           <div className="sidebar-account"><span className="sidebar-avatar">{account.fullName.slice(0, 1).toUpperCase()}</span><div><strong>{account.fullName}</strong><small>{roleLabel(account.roleId)}</small></div><form onSubmit={handleSignOut}><button type="submit" aria-label="Sign out" title="Sign out">↗</button></form></div>
         </aside>
         <div className="staff-main">
@@ -186,8 +233,10 @@ export default function StaffPage() {
           ) : null}
 
           {current === "generated" ? (
-            <CertificateGenerator applications={applications} canIssue={can(account, "certificates.issue")} />
+            <CertificateGenerator applications={applications} canIssue={can(account, "certificates.issue")} onCreated={applyCreated} />
           ) : null}
+
+          {current === "audit" ? <AuditTrail /> : null}
 
           {current === "certificate-template" && can(account, "certificates.issue") ? <CertificateTemplateManager /> : null}
           {current === "workflow" && can(account, "workflow.manage") ? <ApprovalLevelManager /> : null}

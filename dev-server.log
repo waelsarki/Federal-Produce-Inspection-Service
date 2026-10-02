@@ -1,0 +1,129 @@
+
+> fpis-certificate-portal@0.1.0 dev
+> next dev --hostname 0.0.0.0
+
+   ▲ Next.js 15.5.27
+   - Local:        http://localhost:3000
+   - Network:      http://0.0.0.0:3000
+   - Environments: .env
+
+ ✓ Starting...
+ ✓ Ready in 11.8s
+ ○ Compiling / ...
+ GET / 307 in 22209ms
+ ✓ Compiled /staff/login in 1998ms (609 modules)
+ GET / 307 in 313ms
+ GET /staff/login 200 in 93ms
+ ○ Compiling /_not-found ...
+ ✓ Compiled /_not-found in 1093ms (614 modules)
+ GET /information 404 in 1902ms
+ GET /quick-links 404 in 113ms
+ GET /staff/login 200 in 207ms
+ ○ Compiling /verify ...
+ ✓ Compiled /verify in 813ms (657 modules)
+ GET /verify 200 in 1338ms
+ ○ Compiling /staff ...
+ ✓ Compiled /staff in 1369ms (771 modules)
+ GET /staff 200 in 2219ms
+ GET / 307 in 205ms
+ GET /staff/login 200 in 179ms
+ GET /staff/login 200 in 146ms
+ GET /staff 200 in 176ms
+ GET /verify 200 in 221ms
+ ○ Compiling /api/auth/login ...
+ ✓ Compiled /api/auth/login in 1684ms (797 modules)
+ GET /api/auth/login 405 in 3050ms
+ ✓ Compiled in 2s (292 modules)
+ ✓ Compiled in 409ms (292 modules)
+ ✓ Compiled in 272ms (292 modules)
+ ✓ Compiled in 480ms (296 modules)
+ ✓ Compiled in 191ms (260 modules)
+ ✓ Compiled in 330ms (299 modules)
+ ✓ Compiled in 211ms (260 modules)
+ ✓ Compiled in 265ms (300 modules)
+ ✓ Compiled in 166ms (260 modules)
+ ✓ Compiled in 354ms (305 modules)
+ ✓ Compiled in 242ms (305 modules)
+ ○ Compiling /staff ...
+ GET /staff 200 in 2625ms
+ GET /staff/login 200 in 1070ms
+ GET /verify 200 in 859ms
+ ✓ Compiled /api/applications in 1510ms (815 modules)
+ POST /api/applications 401 in 1945ms
+ GET /api/applications 401 in 23ms
+ ✓ Compiled /api/activity in 387ms (817 modules)
+ GET /api/activity?limit=100 401 in 495ms
+ ○ Compiling /api/auth/login ...
+ POST /api/auth/login 200 in 1597ms
+ GET /api/applications 200 in 731ms
+ POST /api/applications 201 in 1008ms
+ GET /api/applications 200 in 57ms
+ GET /api/activity?limit=100 200 in 280ms
+ POST /api/applications 400 in 61ms
+ ✓ Compiled /api/auth/logout in 592ms (447 modules)
+ POST /api/auth/logout 200 in 791ms
+ GET /api/activity 401 in 50ms
+ POST /api/auth/login 200 in 368ms
+ GET /api/applications 200 in 50ms
+ POST /api/applications 201 in 376ms
+ GET /api/applications 200 in 55ms
+ GET /api/activity?limit=100 200 in 46ms
+ POST /api/applications 400 in 44ms
+ POST /api/auth/logout 200 in 74ms
+ GET /api/activity 401 in 48ms
+ ○ Compiling /staff ...
+ ✓ Compiled /staff in 1370ms (464 modules)
+ GET /staff 200 in 1982ms
+ ✓ Compiled /staff/login in 169ms (469 modules)
+ GET /staff/login 200 in 610ms
+ ✓ Compiled /verify in 190ms (475 modules)
+ GET /verify 200 in 537ms
+ ○ Compiling /certificate/[reference] ...
+ ✓ Compiled /certificate/[reference] in 865ms (805 modules)
+ GET /certificate/FPIS-2026-0001 200 in 7771ms
+ GET /staff 200 in 108ms
+ GET /verify 200 in 71ms
+ GET /staff 200 in 197ms
+ GET /staff/login 200 in 174ms
+ GET /verify 200 in 122ms
+ GET /staff 200 in 90ms
+ ○ Compiling / ...
+ ✓ Compiled / in 601ms (487 modules)
+ GET / 307 in 1028ms
+ GET /staff/login 200 in 93ms
+ GET /staff 200 in 78ms
+ GET /staff 200 in 171ms
+ GET /staff/login 200 in 72ms
+ GET /verify 200 in 103ms
+ ○ Compiling /_not-found ...
+ ✓ Compiled /_not-found in 637ms (790 modules)
+ GET /register 404 in 1071ms
+ GET /staff 200 in 469ms
+ ✓ Compiled /api/activity in 505ms (502 modules)
+ GET /api/activity?limit=100 401 in 658ms
+ GET /api/activity?limit=100 401 in 661ms
+ ✓ Compiled / in 439ms (481 modules)
+ GET / 200 in 774ms
+ GET /staff/login 200 in 125ms
+ GET /staff/login 200 in 66ms
+ ○ Compiling /_not-found ...
+ GET /staff/login 200 in 731ms
+ ✓ Compiled /_not-found in 1117ms (802 modules)
+ GET /register 404 in 1597ms
+ GET /register 404 in 601ms
+ GET /staff/login 200 in 1219ms
+ GET /register 404 in 746ms
+ GET /staff/login 200 in 816ms
+ GET /register 404 in 789ms
+ GET /register 404 in 435ms
+ GET /register 404 in 803ms
+ GET /staff/login 200 in 1011ms
+ GET /register 404 in 486ms
+ ○ Compiling /_not-found ...
+ GET /staff/login 200 in 813ms
+ ✓ Compiled /_not-found in 1210ms (790 modules)
+ GET /register 404 in 1823ms
+ GET /register 404 in 585ms
+ GET /staff/login 200 in 607ms
+ GET /register 404 in 546ms
+ GET /staff 200 in 373ms
