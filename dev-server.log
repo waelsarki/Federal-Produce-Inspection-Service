@@ -127,3 +127,7 @@
  GET /staff/login 200 in 607ms
  GET /register 404 in 546ms
  GET /staff 200 in 373ms
+ GET /staff 200 in 420ms
+ GET /staff/login 200 in 122ms
+ ○ Compiling /verify ...
+ GET /verify 200 in 740ms
