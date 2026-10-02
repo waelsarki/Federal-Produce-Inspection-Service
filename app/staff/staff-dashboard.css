@@ -12,6 +12,15 @@
    console route, leaving every other page on the normal full-width header. */
 body:has(.staff-workspace) .portal-header { padding-left: calc(248px + 5.2%); }
 body:has(.staff-workspace) .portal-footer { padding-left: calc(248px + 5.2%); }
+/* The header holds still while the workspace scrolls underneath it, so the
+   agency identity and the status stay on screen instead of riding away with the
+   queue. Scoped to the console for the same reason as the offset above: the
+   certificate sheet and the public pages keep their normal scrolling header.
+   z-index 20 is deliberately BELOW the rail's 30. The rail spans the full window
+   height, so a header painted above it would lay its background across the top of
+   the sidebar and hide the console heading. At 20 the header floats over the
+   scrolling content but still passes behind the rail. */
+body:has(.staff-workspace) .portal-header { position: sticky; top: 0; z-index: 20; }
 .sidebar-heading { padding: 0 11px 28px; border-bottom: 1px solid #ffffff20; }
 .sidebar-kicker { color: #d4b66f; font-size: 8px; font-weight: 800; letter-spacing: 1.1px; }
 .sidebar-heading h1 { margin: 14px 0 0; color: #fff; font-family: Manrope, sans-serif; font-size: 28px; line-height: 1.05; }
@@ -33,7 +42,14 @@ body:has(.staff-workspace) .portal-footer { padding-left: calc(248px + 5.2%); }
 .sidebar-account small { color: #9db9a8; font-size: 8px; }
 .sidebar-account form { margin-left: auto; }
 .sidebar-account button { color: #b7cec0; background: transparent; border: 0; cursor: pointer; font-size: 14px; }
-.staff-main { min-width: 0; max-width: 1360px; width: 100%; margin-left: 248px; padding: 42px clamp(24px, 4vw, 62px) 80px; }
+/* No `width` here on purpose. This is a grid item, so it stretches to fill its
+   column by default, and a stretch sizes the item's *margin box* to the column -
+   the 248px offset is therefore subtracted rather than added. An explicit
+   `width: 100%` would size the border box to the full column and then push it
+   248px further right, overflowing the grid by exactly the rail's width and
+   putting a horizontal scrollbar under the console. `min-width: 0` stops the
+   same thing happening when a panel's own content is wide. */
+.staff-main { min-width: 0; max-width: 1360px; margin-left: 248px; padding: 42px clamp(24px, 4vw, 62px) 80px; }
 .staff-main-header { display: flex; align-items: end; justify-content: space-between; gap: 20px; margin-bottom: 30px; }
 .staff-main-header h2 { margin: 0 0 8px; color: var(--ink); font-family: Manrope, sans-serif; font-size: clamp(27px, 3vw, 40px); font-weight: 600; }
 .staff-main-header h2 em { color: var(--green); font-style: normal; }

@@ -150,7 +150,6 @@ export default function StaffPage() {
 
   return (
     <>
-      <div className="prototype-notice"><strong>Certificate operations</strong><span>Local prototype data only. Connect server-side identity and storage before production use.</span></div>
       <section className="staff-workspace">
         <aside className="staff-sidebar" aria-label="Staff console navigation">
           <div className="sidebar-heading"><span className="sidebar-kicker">FPIS / CONTROL ROOM</span><h1>Admin<br /><em>workspace.</em></h1></div>
