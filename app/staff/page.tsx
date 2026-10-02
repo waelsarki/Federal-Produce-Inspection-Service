@@ -17,7 +17,6 @@ import {
   Award,
   ClipboardList,
   FileCog,
-  House,
   KeyRound,
   LayoutDashboard,
   ScrollText,
@@ -51,15 +50,14 @@ const STAFF_PANELS: { id: StaffPanel; label: string; icon: LucideIcon; permissio
 ];
 
 /**
- * Every page of the portal that exists, reachable from inside the workspace.
+ * Routes out of the console that are not panels of it.
  *
  * The panels above switch the main area without leaving /staff, which left an
- * officer with no way back to the public side of the portal or to a certificate
- * by reference without editing the URL. These are plain links, kept separate
- * from the panels because they leave the console rather than switching it.
+ * officer with no way to the public side of the portal without editing the URL.
+ * These are plain links, kept separate from the panels because they leave the
+ * console rather than switching it.
  */
 const PORTAL_LINKS: { href: string; label: string; icon: LucideIcon }[] = [
-  { href: "/", label: "Portal home", icon: House },
   { href: "/verify", label: "Verify a certificate", icon: ShieldCheck },
   { href: "/staff/login", label: "Staff sign-in", icon: KeyRound },
 ];
